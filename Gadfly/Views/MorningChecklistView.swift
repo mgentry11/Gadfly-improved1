@@ -38,6 +38,7 @@ struct MorningChecklistView: View {
     @State private var selectedScheduleTime: Date?
     @State private var showSchedulePicker = false
     @State private var showResetOptions = false
+    @State private var showEditItems = false
 
     private var activeChecks: [MorningChecklistService.SelfCheck] {
         checklistService.activeChecks
@@ -156,6 +157,9 @@ struct MorningChecklistView: View {
                 markDone()
                 showCustomCheck = false
             })
+        }
+        .sheet(isPresented: $showEditItems) {
+            EditCheckInItemsView(checkInType: .morning)
         }
     }
 
@@ -3637,18 +3641,30 @@ struct MorningChecklistView: View {
 
             Spacer()
 
-            // Done button
-            Button {
-                speakGoodbye()
-                onComplete()
-            } label: {
-                Text("Let's go!")
-                    .font(.headline)
-                    .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(Color.themeAccent)
-                    .cornerRadius(12)
+            VStack(spacing: 12) {
+                Button {
+                    showEditItems = true
+                } label: {
+                    HStack {
+                        Image(systemName: "pencil")
+                        Text("Edit Items")
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(themeColors.accent)
+                }
+                
+                Button {
+                    speakGoodbye()
+                    onComplete()
+                } label: {
+                    Text("Let's go!")
+                        .font(.headline)
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color.themeAccent)
+                        .cornerRadius(12)
+                }
             }
             .padding(.horizontal)
             .padding(.bottom, 24)
@@ -3661,14 +3677,15 @@ struct MorningChecklistView: View {
         VStack(spacing: 24) {
             Spacer()
 
-            Text(appState.selectedPersonality.emoji)
+            Image(systemName: "sunrise.fill")
                 .font(.system(size: 60))
+                .foregroundStyle(.orange)
 
-            Text("No morning checks set up yet")
+            Text("No morning items yet")
                 .font(.title3)
                 .foregroundStyle(themeColors.text)
 
-            Text("Add some in Settings to build your morning routine")
+            Text("Add things you don't want to forget before leaving")
                 .font(.subheadline)
                 .foregroundStyle(themeColors.subtext)
                 .multilineTextAlignment(.center)
@@ -3676,16 +3693,29 @@ struct MorningChecklistView: View {
 
             Spacer()
 
-            Button {
-                onSkip()
-            } label: {
-                Text("Got it")
+            VStack(spacing: 12) {
+                Button {
+                    showEditItems = true
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                        Text("Add Items")
+                    }
                     .font(.headline)
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
                     .background(Color.themeAccent)
                     .cornerRadius(12)
+                }
+                
+                Button {
+                    onSkip()
+                } label: {
+                    Text("Skip for now")
+                        .font(.subheadline)
+                        .foregroundStyle(themeColors.subtext)
+                }
             }
             .padding(.horizontal)
             .padding(.bottom, 24)
