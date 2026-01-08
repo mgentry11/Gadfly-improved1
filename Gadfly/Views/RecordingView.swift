@@ -24,6 +24,9 @@ struct RecordingView: View {
     @State private var isShowingTextInput: Bool = false
     @State private var isBrainDumpMode: Bool = false
     @State private var brainDumpText: String = ""
+    @State private var isQuickNoteMode: Bool = false
+    @State private var quickNoteTitle: String = ""
+    @State private var quickNoteContent: String = ""
     @FocusState private var isTextFieldFocused: Bool
 
     enum ConversationPhase {
@@ -34,6 +37,7 @@ struct RecordingView: View {
         case awaitingConfirmation
         case checkInSetup
         case brainDump
+        case quickNote
     }
     
     enum CheckInSetupStep {
@@ -72,6 +76,8 @@ struct RecordingView: View {
                             VStack(spacing: 16) {
                                 if currentPhase == .brainDump {
                                     brainDumpCard
+                                } else if currentPhase == .quickNote {
+                                    quickNoteCard
                                 } else if allMessages.isEmpty {
                                     emptyStateCard
                                 } else {
@@ -216,23 +222,44 @@ struct RecordingView: View {
                 .foregroundStyle(Color.themeSubtext.opacity(0.7))
                 .multilineTextAlignment(.center)
             
-            Button {
-                isBrainDumpMode = true
-                currentPhase = .brainDump
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "brain.head.profile")
-                        .font(.body)
-                    Text("Brain Dump Mode")
-                        .font(.subheadline.weight(.medium))
+            HStack(spacing: 16) {
+                Button {
+                    isBrainDumpMode = true
+                    currentPhase = .brainDump
+                } label: {
+                    VStack(spacing: 8) {
+                        Image(systemName: "brain.head.profile")
+                            .font(.title2)
+                        Text("Brain Dump")
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .foregroundStyle(Color.themeAccent)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.themeAccent.opacity(0.15))
+                    )
                 }
-                .foregroundStyle(Color.themeAccent)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(
-                    Capsule()
-                        .fill(Color.themeAccent.opacity(0.15))
-                )
+                
+                Button {
+                    isQuickNoteMode = true
+                    currentPhase = .quickNote
+                } label: {
+                    VStack(spacing: 8) {
+                        Image(systemName: "note.text")
+                            .font(.title2)
+                        Text("Quick Note")
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .foregroundStyle(.orange)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.orange.opacity(0.15))
+                    )
+                }
             }
         }
         .padding(24)
@@ -329,6 +356,97 @@ struct RecordingView: View {
                         .stroke(Color.themeAccent.opacity(0.3), lineWidth: 1)
                 )
         )
+    }
+    
+    private var quickNoteCard: some View {
+        VStack(spacing: 20) {
+            HStack {
+                Image(systemName: "note.text")
+                    .font(.title)
+                    .foregroundStyle(.orange)
+                Text("Quick Note")
+                    .font(.title2.bold())
+                    .foregroundStyle(Color.themeText)
+                Spacer()
+                Button {
+                    isQuickNoteMode = false
+                    currentPhase = .idle
+                    quickNoteTitle = ""
+                    quickNoteContent = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .foregroundStyle(Color.themeSubtext)
+                }
+            }
+            
+            TextField("Title (optional)", text: $quickNoteTitle)
+                .font(.title3)
+                .padding(16)
+                .background(Color.themeSecondary)
+                .cornerRadius(12)
+            
+            TextEditor(text: $quickNoteContent)
+                .font(.body)
+                .frame(minHeight: 150, maxHeight: 250)
+                .padding(16)
+                .background(Color.themeSecondary)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                )
+            
+            Button {
+                Task { await saveQuickNote() }
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title2)
+                    Text("Save Note")
+                        .font(.title3.weight(.semibold))
+                }
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 60)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(quickNoteContent.isEmpty ? Color.gray : Color.orange)
+                )
+            }
+            .disabled(quickNoteContent.isEmpty)
+        }
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                .fill(Color.themeSecondary)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24)
+                        .stroke(Color.orange.opacity(0.3), lineWidth: 2)
+                )
+        )
+    }
+    
+    private func saveQuickNote() async {
+        guard !quickNoteContent.isEmpty else { return }
+        
+        let title = quickNoteTitle.isEmpty ? String(quickNoteContent.prefix(50)) : quickNoteTitle
+        
+        do {
+            _ = try calendarService.createNote(title: title, content: quickNoteContent)
+            
+            let response = "Got it! Note saved."
+            localMessages.append(ConversationMessage(role: .assistant, content: response, timestamp: Date()))
+            await speakResponse(response)
+            
+            quickNoteTitle = ""
+            quickNoteContent = ""
+            isQuickNoteMode = false
+            currentPhase = .idle
+        } catch {
+            let errorMsg = "Couldn't save note: \(error.localizedDescription)"
+            localMessages.append(ConversationMessage(role: .assistant, content: errorMsg, timestamp: Date()))
+        }
     }
     
     private func processBrainDump() async {
@@ -1316,7 +1434,11 @@ struct RecordingView: View {
             let formatter = DateFormatter()
             formatter.dateStyle = .short
             formatter.timeStyle = .short
-            lines.append("Reminder: \(reminder.title) at \(formatter.string(from: reminder.triggerDate))")
+            if let triggerDate = reminder.triggerDate {
+                lines.append("Reminder: \(reminder.title) at \(formatter.string(from: triggerDate))")
+            } else {
+                lines.append("Note: \(reminder.title)")
+            }
         }
         
         lines.append("Save these? Say yes to confirm or no to start over.")

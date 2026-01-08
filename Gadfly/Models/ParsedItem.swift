@@ -59,16 +59,22 @@ struct ParsedEvent: Identifiable, Codable {
 struct ParsedReminder: Identifiable, Codable {
     let id: UUID
     var title: String
-    var triggerDate: Date
+    var triggerDate: Date?
     var isCompleted: Bool
     var createdAt: Date
+    var notes: String?
 
-    init(id: UUID = UUID(), title: String, triggerDate: Date, isCompleted: Bool = false, createdAt: Date = Date()) {
+    init(id: UUID = UUID(), title: String, triggerDate: Date? = nil, isCompleted: Bool = false, createdAt: Date = Date(), notes: String? = nil) {
         self.id = id
         self.title = title
         self.triggerDate = triggerDate
         self.isCompleted = isCompleted
         self.createdAt = createdAt
+        self.notes = notes
+    }
+    
+    var isNote: Bool {
+        triggerDate == nil
     }
 }
 

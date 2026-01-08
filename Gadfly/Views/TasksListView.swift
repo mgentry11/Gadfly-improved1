@@ -46,11 +46,15 @@ struct TasksListView: View {
     // MARK: - Grouped Tasks by Date
 
     private var incompleteReminders: [EKReminder] {
-        reminders.filter { !$0.isCompleted }
+        reminders.filter { !$0.isCompleted && $0.dueDateComponents != nil }
     }
 
     private var completedReminders: [EKReminder] {
-        reminders.filter { $0.isCompleted }
+        reminders.filter { $0.isCompleted && $0.dueDateComponents != nil }
+    }
+    
+    private var notes: [EKReminder] {
+        reminders.filter { !$0.isCompleted && $0.dueDateComponents == nil }
     }
 
     // Helper to get date from reminder - tries multiple approaches
@@ -429,7 +433,28 @@ struct TasksListView: View {
                 }
             }
 
-            // Completed tasks section
+            if !notes.isEmpty {
+                Section {
+                    ForEach(notes, id: \.calendarItemIdentifier) { note in
+                        NoteRow(note: note, onDelete: {
+                            Task { await deleteNote(note) }
+                        })
+                        .listRowBackground(Color.orange.opacity(0.1))
+                    }
+                    .onDelete { indexSet in
+                        Task { await deleteReminders(at: indexSet, from: notes) }
+                    }
+                } header: {
+                    HStack {
+                        Image(systemName: "note.text")
+                            .foregroundStyle(.orange)
+                        Text("Notes (\(notes.count))")
+                    }
+                    .foregroundStyle(themeColors.text)
+                    .font(.headline)
+                }
+            }
+            
             if !completedReminders.isEmpty {
                 Section {
                     ForEach(completedReminders, id: \.calendarItemIdentifier) { reminder in
@@ -612,6 +637,15 @@ struct TasksListView: View {
         }
         await loadReminders()
         BackgroundAudioManager.shared.updateAppBadge()
+    }
+    
+    private func deleteNote(_ note: EKReminder) async {
+        do {
+            try await calendarService.deleteReminder(note)
+            await loadReminders()
+        } catch {
+            print("Error deleting note: \(error)")
+        }
     }
 
     private func pushToDate(_ reminder: EKReminder, date: Date) async {
@@ -1568,7 +1602,35 @@ struct FutureTaskRow: View {
     }
 }
 
-// MARK: - Completed Task Row (with Undo button)
+struct NoteRow: View {
+    let note: EKReminder
+    let onDelete: () -> Void
+    @ObservedObject private var themeColors = ThemeColors.shared
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            Image(systemName: "note.text")
+                .font(.title2)
+                .foregroundStyle(.orange)
+            
+            VStack(alignment: .leading, spacing: 6) {
+                Text(note.title ?? "Untitled Note")
+                    .font(.headline)
+                    .foregroundStyle(themeColors.text)
+                
+                if let content = note.notes, !content.isEmpty {
+                    Text(content)
+                        .font(.subheadline)
+                        .foregroundStyle(themeColors.subtext)
+                        .lineLimit(3)
+                }
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, 12)
+    }
+}
 
 struct CompletedTaskRow: View {
     let reminder: EKReminder

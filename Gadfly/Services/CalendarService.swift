@@ -50,20 +50,34 @@ class CalendarService: ObservableObject {
     func createReminder(_ parsedReminder: ParsedReminder) throws -> String {
         let reminder = EKReminder(eventStore: store)
         reminder.title = parsedReminder.title
+        reminder.notes = parsedReminder.notes
 
-        let components = Calendar.current.dateComponents(
-            [.year, .month, .day, .hour, .minute],
-            from: parsedReminder.triggerDate
-        )
-        reminder.dueDateComponents = components
-
-        let alarm = EKAlarm(absoluteDate: parsedReminder.triggerDate)
-        reminder.addAlarm(alarm)
+        if let triggerDate = parsedReminder.triggerDate {
+            let components = Calendar.current.dateComponents(
+                [.year, .month, .day, .hour, .minute],
+                from: triggerDate
+            )
+            reminder.dueDateComponents = components
+            
+            let alarm = EKAlarm(absoluteDate: triggerDate)
+            reminder.addAlarm(alarm)
+        }
 
         reminder.calendar = store.defaultCalendarForNewReminders()
 
         try store.save(reminder, commit: true)
 
+        return reminder.calendarItemIdentifier
+    }
+    
+    func createNote(title: String, content: String) throws -> String {
+        let reminder = EKReminder(eventStore: store)
+        reminder.title = title
+        reminder.notes = content
+        reminder.calendar = store.defaultCalendarForNewReminders()
+        
+        try store.save(reminder, commit: true)
+        
         return reminder.calendarItemIdentifier
     }
 
@@ -292,6 +306,7 @@ class CalendarService: ObservableObject {
         var eventIds: [String] = []
         var reminderIds: [String] = []
         var taskIds: [String] = []
+        var noteIds: [String] = []
 
         let notificationService = NotificationService.shared
 
@@ -314,16 +329,21 @@ class CalendarService: ObservableObject {
             let id = try createReminder(reminder)
             reminderIds.append(id)
 
-            // Schedule notification for reminder
-            if remindersEnabled {
+            if remindersEnabled, let triggerDate = reminder.triggerDate {
                 notificationService.scheduleTaskReminder(
                     taskId: id,
                     title: reminder.title,
-                    deadline: reminder.triggerDate,
-                    reminderTime: reminder.triggerDate,
+                    deadline: triggerDate,
+                    reminderTime: triggerDate,
                     repeatInterval: nagIntervalMinutes
                 )
             }
+        }
+        
+        for note in result.notes {
+            let title = note.title ?? String(note.content.prefix(50))
+            let id = try createNote(title: title, content: note.content)
+            noteIds.append(id)
         }
 
         for task in result.tasks {
@@ -368,7 +388,8 @@ class CalendarService: ObservableObject {
         return SaveResult(
             eventCount: eventIds.count,
             reminderCount: reminderIds.count,
-            taskCount: taskIds.count
+            taskCount: taskIds.count,
+            noteCount: noteIds.count
         )
     }
 
@@ -376,9 +397,10 @@ class CalendarService: ObservableObject {
         let eventCount: Int
         let reminderCount: Int
         let taskCount: Int
+        let noteCount: Int
 
         var totalCount: Int {
-            eventCount + reminderCount + taskCount
+            eventCount + reminderCount + taskCount + noteCount
         }
 
         var summary: String {
@@ -388,6 +410,9 @@ class CalendarService: ObservableObject {
             }
             if reminderCount > 0 {
                 parts.append("\(reminderCount) reminder\(reminderCount == 1 ? "" : "s")")
+            }
+            if noteCount > 0 {
+                parts.append("\(noteCount) note\(noteCount == 1 ? "" : "s")")
             }
             if taskCount > 0 {
                 parts.append("\(taskCount) task\(taskCount == 1 ? "" : "s")")
