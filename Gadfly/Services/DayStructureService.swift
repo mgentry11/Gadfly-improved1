@@ -585,11 +585,17 @@ class DayStructureService: ObservableObject {
     }
     
     static let adhdMorningItems: [CheckInItem] = [
-        CheckInItem(title: "Keys, wallet, phone check", icon: "key.fill", order: 0),
-        CheckInItem(title: "Take medication", icon: "pills.fill", order: 1),
-        CheckInItem(title: "Eat breakfast", icon: "fork.knife", order: 2),
-        CheckInItem(title: "Review today's tasks", icon: "checklist", order: 3),
-        CheckInItem(title: "Set one main intention", icon: "star.fill", order: 4)
+        CheckInItem(title: "Keys in pocket/bag", icon: "key.fill", order: 0),
+        CheckInItem(title: "Wallet in pocket/bag", icon: "creditcard.fill", order: 1),
+        CheckInItem(title: "Phone with you", icon: "iphone", order: 2),
+        CheckInItem(title: "Lights off", icon: "lightbulb.slash", order: 3),
+        CheckInItem(title: "Stove/appliances off", icon: "flame.fill", order: 4),
+        CheckInItem(title: "Windows closed", icon: "window.horizontal.closed", order: 5),
+        CheckInItem(title: "Take morning medication", icon: "pills.fill", order: 6),
+        CheckInItem(title: "Review today's tasks", icon: "checklist", order: 7),
+        CheckInItem(title: "Check calendar", icon: "calendar", order: 8),
+        CheckInItem(title: "Check emails/messages", icon: "envelope.fill", order: 9),
+        CheckInItem(title: "Set one main intention", icon: "star.fill", order: 10)
     ]
     
     static let adhdAfternoonItems: [CheckInItem] = [
@@ -600,12 +606,14 @@ class DayStructureService: ObservableObject {
     ]
     
     static let adhdBedtimeItems: [CheckInItem] = [
-        CheckInItem(title: "Keys location set", icon: "key.fill", order: 0),
-        CheckInItem(title: "Wallet location set", icon: "creditcard.fill", order: 1),
-        CheckInItem(title: "Phone charging", icon: "battery.100.bolt", order: 2),
-        CheckInItem(title: "Devices charging", icon: "laptopcomputer", order: 3),
-        CheckInItem(title: "Alarm set", icon: "alarm.fill", order: 4),
-        CheckInItem(title: "Tomorrow's outfit ready", icon: "tshirt.fill", order: 5),
-        CheckInItem(title: "Wind-down routine started", icon: "moon.fill", order: 6)
+        CheckInItem(title: "Brush teeth", icon: "mouth.fill", order: 0),
+        CheckInItem(title: "Take evening medication", icon: "pills.fill", order: 1),
+        CheckInItem(title: "Wash face", icon: "drop.fill", order: 2),
+        CheckInItem(title: "Lock doors", icon: "lock.fill", order: 3),
+        CheckInItem(title: "Alarm set for tomorrow", icon: "alarm.fill", order: 4),
+        CheckInItem(title: "Phone charging", icon: "battery.100.bolt", order: 5),
+        CheckInItem(title: "Tomorrow's clothes ready", icon: "tshirt.fill", order: 6),
+        CheckInItem(title: "Keys in spot for morning", icon: "key.fill", order: 7),
+        CheckInItem(title: "Wallet in spot for morning", icon: "creditcard.fill", order: 8)
     ]
 }
