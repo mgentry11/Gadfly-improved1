@@ -265,6 +265,18 @@ struct EditCheckInItemsView: View {
                     }
                 }
             }
+            
+            Button {
+                resetToDefaults()
+            } label: {
+                HStack {
+                    Image(systemName: "arrow.counterclockwise")
+                    Text("Reset to Defaults")
+                }
+                .font(.subheadline)
+                .foregroundStyle(.red.opacity(0.8))
+            }
+            .padding(.top, 16)
         }
     }
     
@@ -300,6 +312,17 @@ struct EditCheckInItemsView: View {
                 morningService.addSelfCheck(title)
             case .bedtime:
                 dayStructure.addBedtimeItem(title: title, icon: icon)
+            }
+        }
+    }
+    
+    private func resetToDefaults() {
+        withAnimation {
+            switch checkInType {
+            case .morning:
+                morningService.resetToDefaults()
+            case .bedtime:
+                dayStructure.bedtimeItems = DayStructureService.adhdBedtimeItems
             }
         }
     }

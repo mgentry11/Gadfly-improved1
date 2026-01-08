@@ -340,21 +340,33 @@ class MorningChecklistService: ObservableObject {
 
     func addSampleChecks() {
         guard selfChecks.isEmpty else { return }
-
-        let samples = [
-            "Check my calendar for today",
-            "Take my medication",
-            "Review my task list",
-            "Eat breakfast",
-            "Check messages/email"
+        resetToDefaults()
+    }
+    
+    func resetToDefaults() {
+        selfChecks.removeAll()
+        
+        let defaults = [
+            "Keys in pocket/bag",
+            "Wallet in pocket/bag",
+            "Phone with you",
+            "Lights off",
+            "Stove/appliances off",
+            "Windows closed",
+            "Take morning medication",
+            "Review today's tasks",
+            "Check calendar",
+            "Check emails/messages",
+            "Set one main intention"
         ]
 
-        for (index, title) in samples.enumerated() {
+        for (index, title) in defaults.enumerated() {
             var check = SelfCheck(title: title, order: index)
             check.isActive = true
             selfChecks.append(check)
         }
 
         saveSelfChecks()
+        resetTodaysProgress()
     }
 }
