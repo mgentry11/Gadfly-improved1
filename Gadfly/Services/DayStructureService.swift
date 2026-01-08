@@ -607,13 +607,16 @@ class DayStructureService: ObservableObject {
     
     static let adhdBedtimeItems: [CheckInItem] = [
         CheckInItem(title: "Brush teeth", icon: "mouth.fill", order: 0),
-        CheckInItem(title: "Take evening medication", icon: "pills.fill", order: 1),
+        CheckInItem(title: "Take evening meds", icon: "pills.fill", order: 1),
         CheckInItem(title: "Wash face", icon: "drop.fill", order: 2),
         CheckInItem(title: "Lock doors", icon: "lock.fill", order: 3),
-        CheckInItem(title: "Alarm set for tomorrow", icon: "alarm.fill", order: 4),
-        CheckInItem(title: "Phone charging", icon: "battery.100.bolt", order: 5),
-        CheckInItem(title: "Tomorrow's clothes ready", icon: "tshirt.fill", order: 6),
-        CheckInItem(title: "Keys in spot for morning", icon: "key.fill", order: 7),
-        CheckInItem(title: "Wallet in spot for morning", icon: "creditcard.fill", order: 8)
+        CheckInItem(title: "Stove/appliances off", icon: "flame.fill", order: 4),
+        CheckInItem(title: "Set alarm", icon: "alarm.fill", order: 5),
+        CheckInItem(title: "Phone charging", icon: "battery.100.bolt", order: 6),
+        CheckInItem(title: "Keys in spot", icon: "key.fill", order: 7),
+        CheckInItem(title: "Wallet in spot", icon: "creditcard.fill", order: 8),
+        CheckInItem(title: "Clothes for tomorrow", icon: "tshirt.fill", order: 9),
+        CheckInItem(title: "Bag packed", icon: "bag.fill", order: 10),
+        CheckInItem(title: "Check tomorrow's weather", icon: "cloud.sun.fill", order: 11)
     ]
 }

@@ -347,17 +347,20 @@ class MorningChecklistService: ObservableObject {
         selfChecks.removeAll()
         
         let defaults = [
-            "Keys in pocket/bag",
-            "Wallet in pocket/bag",
-            "Phone with you",
+            "Phone",
+            "Keys",
+            "Wallet",
+            "Glasses",
+            "Headphones",
+            "Lunch/snacks",
+            "Water bottle",
+            "Work badge/ID",
+            "Bag packed",
+            "Lock door",
             "Lights off",
             "Stove/appliances off",
             "Windows closed",
-            "Take morning medication",
-            "Review today's tasks",
-            "Check calendar",
-            "Check emails/messages",
-            "Set one main intention"
+            "Take medication"
         ]
 
         for (index, title) in defaults.enumerated() {
