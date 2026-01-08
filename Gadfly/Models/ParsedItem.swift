@@ -76,6 +76,7 @@ struct OpenAIParseResponse: Decodable {
     let tasks: [TaskDTO]?
     let events: [EventDTO]?
     let reminders: [ReminderDTO]?
+    let notes: [NoteDTO]?
     let vaultOperations: [VaultDTO]?
     let breakCommand: BreakDTO?
     let goals: [GoalDTO]?
@@ -103,23 +104,28 @@ struct OpenAIParseResponse: Decodable {
         let title: String
         let triggerDate: String
     }
+    
+    struct NoteDTO: Decodable {
+        let content: String
+        let title: String?
+    }
 
     struct VaultDTO: Decodable {
-        let action: String  // "store", "retrieve", "delete", "list"
-        let name: String    // The secret name
-        let value: String?  // Only for store action
+        let action: String
+        let name: String
+        let value: String?
     }
 
     struct BreakDTO: Decodable {
-        let durationMinutes: Int?   // Duration in minutes (e.g., 30, 60, 120)
-        let endTime: String?        // ISO8601 end time for "until X" commands
-        let isEndingBreak: Bool?    // True if user wants to END their break early
+        let durationMinutes: Int?
+        let endTime: String?
+        let isEndingBreak: Bool?
     }
 
     struct RescheduleDTO: Decodable {
-        let taskTitle: String       // Partial task name to match
-        let newDate: String?        // ISO8601 new date/time
-        let bringToToday: Bool?     // If true, bring back to now
+        let taskTitle: String
+        let newDate: String?
+        let bringToToday: Bool?
     }
 }
 

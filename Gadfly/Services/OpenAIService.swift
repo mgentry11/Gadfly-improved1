@@ -15,6 +15,7 @@ class OpenAIService: ObservableObject {
         let tasks: [ParsedTask]
         let events: [ParsedEvent]
         let reminders: [ParsedReminder]
+        let notes: [ParsedNote]
         let vaultOperations: [VaultOperation]
         let breakCommand: BreakCommand?
         let goals: [Goal]
@@ -24,6 +25,12 @@ class OpenAIService: ObservableObject {
         let clarifyingQuestion: String?
         let isComplete: Bool
         let summary: String?
+    }
+    
+    struct ParsedNote {
+        let content: String
+        let title: String?
+        let timestamp: Date
     }
 
     struct RescheduleOperation {
@@ -110,7 +117,18 @@ class OpenAIService: ObservableObject {
         - TASKS: Things to do without a specific scheduled time (groceries, call someone, finish project)
         - EVENTS: Appointments, meetings, activities at specific times (dentist at 3pm, dinner at 7)
         - REMINDERS: Time-based alerts (remind me to take medicine at 8am, remind me about X before Y)
+        - NOTES: Free-form thoughts or information to save (not tasks). Triggered by "note this", "take a note", "remember this thought", "jot this down"
         - VAULT: Secure storage for passwords, API keys, and secrets (encrypted in the vault)
+        
+        NOTE COMMANDS (Quick Capture):
+        Recognize when user wants to save a thought or information (NOT a task):
+        - "Note: I had an idea about the project structure"
+        - "Take a note: met with John, discussed timeline"
+        - "Just a thought: we should consider remote options"
+        - "Remember this: the code is ABC123"
+        - "Jot down: feeling productive today"
+        
+        For notes, capture the CONTENT (what they said) and optionally a TITLE if it's clear.
 
         VAULT COMMANDS (Secure Password/Secret Storage):
         Recognize these patterns for vault operations:
@@ -186,6 +204,7 @@ class OpenAIService: ObservableObject {
             "tasks": [{"title": "Detailed task description", "deadline": "ISO8601 or null", "priority": "low|medium|high"}],
             "events": [{"title": "Event name with details", "startDate": "ISO8601", "endDate": "ISO8601 or null", "location": "string or null"}],
             "reminders": [{"title": "Reminder text", "triggerDate": "ISO8601"}],
+            "notes": [{"content": "The note content", "title": "Optional title or null"}],
             "vaultOperations": [{"action": "store|retrieve|delete|list", "name": "secret-name", "value": "secret-value-or-null"}],
             "breakCommand": {"durationMinutes": 30, "endTime": "ISO8601 or null", "isEndingBreak": false} or null,
             "goals": [{"title": "Goal title", "description": "Why this matters", "targetDate": "ISO8601 or null", "milestones": [{"title": "Part 1", "description": "...", "estimatedDays": 14, "tasks": ["task1", "task2"]}], "dailyTimeMinutes": 30, "preferredDays": [1,2,3,4,5]}] or null,
@@ -355,10 +374,9 @@ class OpenAIService: ObservableObject {
 
         // Parse reschedule operations
         let rescheduleOperations: [RescheduleOperation] = (response.rescheduleOperations ?? []).compactMap { dto in
-            // Either use newDate or bringToToday
             let newDate: Date
             if dto.bringToToday == true {
-                newDate = Date().addingTimeInterval(5 * 60) // 5 minutes from now
+                newDate = Date().addingTimeInterval(5 * 60)
             } else if let dateString = dto.newDate, let parsed = parseDate(dateString) {
                 newDate = parsed
             } else {
@@ -371,11 +389,16 @@ class OpenAIService: ObservableObject {
                 bringToToday: dto.bringToToday ?? false
             )
         }
+        
+        let notes: [ParsedNote] = (response.notes ?? []).map { dto in
+            ParsedNote(content: dto.content, title: dto.title, timestamp: Date())
+        }
 
         return ParseResult(
             tasks: tasks,
             events: events,
             reminders: reminders,
+            notes: notes,
             vaultOperations: vaultOperations,
             breakCommand: breakCommand,
             goals: goals,
@@ -401,7 +424,7 @@ private struct ClaudeResponse: Codable {
 
 extension OpenAIParseResponse {
     enum CodingKeys: String, CodingKey {
-        case tasks, events, reminders, vaultOperations, breakCommand, goals, goalOperations, rescheduleOperations, helpRequest, clarifyingQuestion, isComplete, summary
+        case tasks, events, reminders, notes, vaultOperations, breakCommand, goals, goalOperations, rescheduleOperations, helpRequest, clarifyingQuestion, isComplete, summary
     }
 
     init(from decoder: Decoder) throws {
@@ -409,6 +432,7 @@ extension OpenAIParseResponse {
         tasks = try container.decodeIfPresent([TaskDTO].self, forKey: .tasks)
         events = try container.decodeIfPresent([EventDTO].self, forKey: .events)
         reminders = try container.decodeIfPresent([ReminderDTO].self, forKey: .reminders)
+        notes = try container.decodeIfPresent([NoteDTO].self, forKey: .notes)
         vaultOperations = try container.decodeIfPresent([VaultDTO].self, forKey: .vaultOperations)
         breakCommand = try container.decodeIfPresent(BreakDTO.self, forKey: .breakCommand)
         goals = try container.decodeIfPresent([GoalDTO].self, forKey: .goals)

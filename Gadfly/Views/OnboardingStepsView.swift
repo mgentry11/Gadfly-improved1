@@ -493,6 +493,8 @@ struct NaggingLevelStep: View {
             SpeechService.shared.queueSpeech("Moderate mode. I'll check in with supportive nudges.")
         case .persistent:
             SpeechService.shared.queueSpeech("Persistent mode. I won't let you forget!")
+        case .relentless:
+            SpeechService.shared.queueSpeech("NagMe mode activated! I'll remind you every 5 minutes until you're done.")
         }
     }
 }

@@ -84,45 +84,55 @@ class LocationService: NSObject, ObservableObject {
             switch self {
             case .gym:
                 return [
-                    "Log workout in fitness app",
-                    "Post-workout protein",
-                    "Stretch & cool down",
-                    "Schedule next workout",
-                    "Hydrate"
+                    "Do you have your water bottle?",
+                    "Do you have your headphones/earbuds?",
+                    "Do you have your towel?",
+                    "Do you have your gym bag?",
+                    "Did you grab your phone?",
+                    "Do you have your keys?"
                 ]
             case .work:
                 return [
-                    "Save all work",
-                    "Update task list",
-                    "Check tomorrow's calendar",
-                    "Pack up belongings",
-                    "Clear desk"
+                    "Do you have your laptop/charger?",
+                    "Do you have your badge/keycard?",
+                    "Do you have your phone?",
+                    "Do you have your keys?",
+                    "Do you have your wallet?",
+                    "Do you have your headphones?",
+                    "Did you grab your bag?"
                 ]
             case .home:
                 return [
-                    "Keys & wallet",
-                    "Phone charged",
-                    "Lights off",
-                    "Lock doors"
+                    "Do you have your wallet?",
+                    "Do you have your keys?",
+                    "Do you have your phone?",
+                    "Do you have your bag?",
+                    "Do you have your headphones?"
                 ]
             case .school:
                 return [
-                    "Homework packed",
-                    "Check assignments due",
-                    "Books & supplies",
-                    "Lunch/snacks"
+                    "Do you have your backpack?",
+                    "Do you have your laptop/tablet?",
+                    "Do you have your homework?",
+                    "Do you have your phone?",
+                    "Do you have your lunch/snacks?",
+                    "Do you have your water bottle?",
+                    "Do you have your charger?"
                 ]
             case .therapy:
                 return [
-                    "Schedule next appointment",
-                    "Note any homework",
-                    "Self-care check"
+                    "Do you have your phone?",
+                    "Do you have your keys?",
+                    "Do you have your wallet?",
+                    "Did you schedule your next appointment?"
                 ]
             case .store:
                 return [
-                    "Check shopping list complete",
-                    "Check receipt",
-                    "Cart returned"
+                    "Do you have your wallet?",
+                    "Do you have your phone?",
+                    "Do you have your keys?",
+                    "Did you get everything on your list?",
+                    "Did you return your cart?"
                 ]
             case .custom:
                 return []

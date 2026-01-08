@@ -129,7 +129,7 @@ extension GadflyTask {
         let remaining = dueDate.timeIntervalSinceNow
 
         if remaining < 0 {
-            return "Overdue"
+            return "Ready now"
         }
 
         let hours = Int(remaining) / 3600

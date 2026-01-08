@@ -81,10 +81,10 @@ struct FocusHomeView: View {
                     toggleVoiceCommand()
                 } label: {
                     Image(systemName: isVoiceActive ? "mic.fill" : "mic")
-                        .font(.title2)
+                        .font(.title)
                         .foregroundStyle(isVoiceActive ? Color.red : themeColors.accent)
                         .symbolEffect(.pulse, isActive: isVoiceActive)
-                        .padding(12)
+                        .frame(width: 56, height: 56)
                         .background(
                             Circle()
                                 .fill(themeColors.secondary)
@@ -107,55 +107,20 @@ struct FocusHomeView: View {
                 }
 
                 Menu {
-                    // Daily Check-ins Section
-                    Section("Daily Check-ins") {
-                        Button { showMorningChecklist = true } label: {
-                            Label("Morning Check-in", systemImage: "sunrise.fill")
-                        }
-                        Button { showMiddayCheckIn = true } label: {
-                            Label("Afternoon Check-in", systemImage: "sun.max.fill")
-                        }
-                        Button { showEveningCheckIn = true } label: {
-                            Label("Evening Check-in", systemImage: "moon.fill")
-                        }
-                        Button { showCustomCheckInSetup = true } label: {
-                            Label("Custom Check-in", systemImage: "slider.horizontal.3")
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    // Quick Actions
-                    Button { showEnergyCheckIn = true } label: {
-                        Label("Energy Check-in", systemImage: "bolt.fill")
-                    }
                     Button { showCalendar = true } label: {
                         Label("Calendar", systemImage: "calendar")
                     }
                     Button { showHyperfocus = true } label: {
                         Label(hyperfocusService.isActive ? "Exit Hyperfocus" : "Hyperfocus Mode", systemImage: "scope")
                     }
-                    
-                    Divider()
-                    
-                    // Settings
                     Button { showCheckInSettings = true } label: {
-                        Label("Set Check-in Times", systemImage: "clock.fill")
-                    }
-                    Menu("Change Mode") {
-                        ForEach(PresetMode.allCases, id: \.self) { mode in
-                            Button {
-                                modeService.setMode(mode, appState: appState)
-                            } label: {
-                                Label(mode.displayName, systemImage: mode.icon)
-                            }
-                        }
+                        Label("Check-in Settings", systemImage: "clock.fill")
                     }
                 } label: {
                     Image(systemName: "line.3.horizontal")
                         .font(.title2)
                         .foregroundStyle(themeColors.text)
-                        .padding(12)
+                        .frame(width: 48, height: 48)
                         .background(
                             Circle()
                                 .fill(themeColors.secondary)
@@ -427,76 +392,121 @@ struct FocusHomeView: View {
     // MARK: - Focus Task Card
 
     private func focusTaskCard(_ task: EKReminder) -> some View {
-        VStack(spacing: 20) {
-            // Priority badge
-            if task.priority > 0 && task.priority <= 4 {
-                Text("HIGH PRIORITY")
-                    .font(.caption.bold())
-                    .foregroundStyle(themeColors.priorityHigh)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(
-                        Capsule()
-                            .fill(themeColors.priorityHigh.opacity(0.15))
-                    )
-            }
-
-            Text(task.title ?? "Untitled Task")
-                .font(.title)
-                .fontWeight(.bold)
-                .foregroundStyle(themeColors.text)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .padding(.vertical, 16)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(themeColors.secondary.opacity(0.3))
-                        .shadow(color: themeColors.accent.opacity(0.2), radius: 20, x: 0, y: 0)
-                )
-
-            // Time remaining (tap to show ring)
-            if let dueDate = task.dueDateComponents?.date {
-                TimeRemainingView(deadline: dueDate)
+        VStack(spacing: 16) {
+            VStack(spacing: 16) {
+                Text("YOUR TASK")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(themeColors.accent)
+                    .tracking(1)
+                
+                Text(task.title ?? "Untitled Task")
+                    .font(.title.weight(.bold))
+                    .foregroundStyle(themeColors.text)
+                    .multilineTextAlignment(.center)
+                
+                taskInfoBar(task)
                     .onTapGesture { showTimeRing = true }
-
-                // AI duration estimate hint
-                let estimate = DurationEstimator.shared.estimateDuration(for: task.title ?? "")
-                Text("Estimated: \(estimate.displayString)")
-                    .font(.caption)
-                    .foregroundStyle(themeColors.subtext)
             }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 24)
+            .padding(.horizontal, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(themeColors.secondary)
+            )
+            .padding(.horizontal, 20)
 
-            // Help buttons - friendly assistance
             helpButtons
 
             Button {
                 Task { await completeTask(task) }
             } label: {
-                HStack(spacing: 16) {
+                HStack(spacing: 12) {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.largeTitle)
+                        .font(.title)
                     Text("Done!")
-                        .font(.title.bold())
+                        .font(.title2.bold())
                 }
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
-                .frame(height: 80)
+                .frame(height: 70)
                 .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(
-                            LinearGradient(
-                                colors: [themeColors.success, themeColors.success.opacity(0.8)],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(themeColors.success)
                 )
-                .shadow(color: themeColors.success.opacity(0.4), radius: 12, x: 0, y: 6)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 12)
+            .padding(.horizontal, 20)
         }
-        .padding()
+        .padding(.vertical)
+    }
+    
+    private func taskInfoBar(_ task: EKReminder) -> some View {
+        let isHighPriority = task.priority > 0 && task.priority <= 4
+        let estimate = DurationEstimator.shared.estimateDuration(for: task.title ?? "")
+        let dueDate = task.dueDateComponents?.date
+        
+        return HStack(spacing: 0) {
+            if isHighPriority {
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.subheadline)
+                    Text("Priority")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(themeColors.priorityHigh)
+            }
+            
+            if let due = dueDate {
+                let remaining = due.timeIntervalSinceNow
+                let timeText = formatTimeRemaining(remaining)
+                let urgencyColor = colorForTimeRemaining(remaining)
+                
+                HStack(spacing: 6) {
+                    Image(systemName: "clock.fill")
+                        .font(.subheadline)
+                    Text(timeText)
+                        .font(.subheadline.weight(.semibold))
+                }
+                .foregroundStyle(urgencyColor)
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(urgencyColor.opacity(0.15))
+            }
+            
+            HStack(spacing: 6) {
+                Image(systemName: "hourglass")
+                    .font(.subheadline)
+                Text(estimate.displayString)
+                    .font(.subheadline.weight(.semibold))
+            }
+            .foregroundStyle(themeColors.text)
+            .frame(maxWidth: .infinity)
+            .frame(height: 50)
+            .background(themeColors.secondary)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal, 24)
+    }
+    
+    private func formatTimeRemaining(_ interval: TimeInterval) -> String {
+        if interval < 0 { return "Ready when you are" }
+        let hours = Int(interval) / 3600
+        let minutes = (Int(interval) % 3600) / 60
+        if hours > 24 { return "\(hours / 24)d left" }
+        if hours > 0 { return "\(hours)h \(minutes)m" }
+        if minutes > 0 { return "\(minutes)m left" }
+        return "Now"
+    }
+    
+    private func colorForTimeRemaining(_ interval: TimeInterval) -> Color {
+        if interval < 0 { return themeColors.priorityHigh }
+        if interval < 900 { return themeColors.priorityHigh }
+        if interval < 3600 { return .orange }
+        if interval < 14400 { return .yellow }
+        return themeColors.success
     }
 
     private var allDoneView: some View {
@@ -699,20 +709,18 @@ struct FocusHomeView: View {
     @State private var showHelpOptions = false
 
     private var helpButtons: some View {
-        HStack {
-            Spacer()
-            
+        VStack(spacing: 12) {
             if showHelpOptions {
-                HStack(spacing: 8) {
-                    helpOption(icon: "lightbulb", label: "How?", color: .orange) {
+                HStack(spacing: 12) {
+                    helpOption(icon: "lightbulb.fill", label: "How?", color: .orange) {
                         showAttackPlan = true
                         showHelpOptions = false
                     }
-                    helpOption(icon: "bubble.left", label: "Think", color: .blue) {
+                    helpOption(icon: "bubble.left.fill", label: "Think", color: .blue) {
                         showCoaching = true
                         showHelpOptions = false
                     }
-                    helpOption(icon: "square.grid.2x2", label: "Split", color: .purple) {
+                    helpOption(icon: "square.grid.2x2.fill", label: "Split", color: .purple) {
                         showBreakdown = true
                         showHelpOptions = false
                     }
@@ -725,40 +733,40 @@ struct FocusHomeView: View {
                     showHelpOptions.toggle()
                 }
             } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: showHelpOptions ? "xmark" : "questionmark")
-                    if !showHelpOptions {
-                        Text("Need help?")
-                    }
+                HStack(spacing: 8) {
+                    Image(systemName: showHelpOptions ? "xmark" : "questionmark.circle.fill")
+                        .font(.title3)
+                    Text(showHelpOptions ? "Close" : "Need help?")
+                        .font(.body.weight(.medium))
                 }
-                .font(.caption.weight(.medium))
                 .foregroundStyle(showHelpOptions ? .gray : themeColors.accent)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 14)
+                .frame(maxWidth: .infinity)
                 .background(
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 14)
                         .fill(themeColors.secondary)
                 )
             }
-            
-            Spacer()
+            .padding(.horizontal, 24)
         }
         .padding(.top, 8)
     }
     
     private func helpOption(icon: String, label: String, color: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            VStack(spacing: 4) {
+            VStack(spacing: 6) {
                 Image(systemName: icon)
-                    .font(.title3)
+                    .font(.title2)
                 Text(label)
-                    .font(.caption2)
+                    .font(.subheadline.weight(.medium))
             }
-            .foregroundStyle(color)
-            .frame(width: 55, height: 50)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: 70)
             .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(color.opacity(0.1))
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(color)
             )
         }
     }
@@ -769,50 +777,50 @@ struct FocusHomeView: View {
 
     private var bottomActions: some View {
         VStack(spacing: 16) {
-            HStack(spacing: 16) {
+            HStack(spacing: 12) {
                 Button {
                     skipCurrentTask()
                 } label: {
                     Text("Skip")
-                        .font(.subheadline)
+                        .font(.headline)
                         .foregroundStyle(themeColors.subtext)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                        .background(Capsule().fill(themeColors.secondary))
+                        .frame(height: 56)
+                        .frame(maxWidth: .infinity)
+                        .background(RoundedRectangle(cornerRadius: 16).fill(themeColors.secondary))
                 }
                 
                 if remainingCount > 0 {
                     Button {
                         pickRandomTask()
                     } label: {
-                        HStack(spacing: 4) {
+                        HStack(spacing: 8) {
                             Image(systemName: "dice.fill")
+                                .font(.title3)
                             Text("Random")
+                                .font(.headline)
                         }
-                        .font(.subheadline)
                         .foregroundStyle(.orange)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                        .background(Capsule().fill(Color.orange.opacity(0.1)))
+                        .frame(height: 56)
+                        .frame(maxWidth: .infinity)
+                        .background(RoundedRectangle(cornerRadius: 16).fill(Color.orange.opacity(0.15)))
                     }
                 }
                 
-                Menu {
-                    Button { showAllTasks = true } label: {
-                        Label("\(remainingCount) more tasks", systemImage: "list.bullet")
-                    }
-                    Divider()
-                    Button(role: .none) { } label: {
-                        Label("I'm stuck", systemImage: "lifepreserver")
-                    }
+                Button {
+                    showAllTasks = true
                 } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.title3)
-                        .foregroundStyle(themeColors.subtext)
-                        .padding(10)
-                        .background(Circle().fill(themeColors.secondary))
+                    HStack(spacing: 6) {
+                        Image(systemName: "list.bullet")
+                            .font(.title3)
+                        Text("\(remainingCount)")
+                            .font(.headline)
+                    }
+                    .foregroundStyle(themeColors.accent)
+                    .frame(width: 80, height: 56)
+                    .background(RoundedRectangle(cornerRadius: 16).fill(themeColors.secondary))
                 }
             }
+            .padding(.horizontal, 20)
         }
         .padding(.bottom, 32)
     }
@@ -953,19 +961,20 @@ struct TimeRemainingView: View {
     private let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 10) {
             Image(systemName: urgencyIcon)
+                .font(.title3)
                 .foregroundStyle(urgencyColor)
 
             Text(timeString)
-                .font(.subheadline.monospacedDigit())
+                .font(.title3.weight(.semibold).monospacedDigit())
                 .foregroundStyle(urgencyColor)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
         .background(
             Capsule()
-                .fill(urgencyColor.opacity(0.1))
+                .fill(urgencyColor.opacity(0.15))
         )
         .onAppear { updateTimeRemaining() }
         .onReceive(timer) { _ in updateTimeRemaining() }
@@ -977,7 +986,7 @@ struct TimeRemainingView: View {
 
     private var timeString: String {
         if timeRemaining < 0 {
-            return "Overdue"
+            return "Still here for you"
         }
 
         let hours = Int(timeRemaining) / 3600

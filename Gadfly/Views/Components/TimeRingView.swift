@@ -106,7 +106,7 @@ struct TimeRingView: View {
 
     private var timeLabel: String {
         if timeRemaining < 0 {
-            return "overdue"
+            return "past time"
         } else if timeRemaining < 60 {
             return "seconds left"
         } else if timeRemaining < 3600 {
@@ -170,7 +170,7 @@ struct TimeRingView: View {
         case .attention: return "Getting close"
         case .urgent: return "Hurry up!"
         case .critical: return "Almost out of time!"
-        case .overdue: return "Past deadline"
+        case .overdue: return "Ready when you are"
         }
     }
 }

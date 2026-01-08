@@ -298,6 +298,101 @@ Sometimes it's easier to work when someone else is working too. This is called "
 
 ---
 
+## Morning Prep Checklist
+
+### What Is It?
+
+Before you leave for the day, Gadfly walks you through a simple checklist to make sure you have everything you need. No more leaving your keys at home!
+
+### How It Works
+
+1. One question at a time: "Do you have your wallet?"
+2. Tap **Yes** if you have it
+3. Tap **No** if you don't (Gadfly will ask where you last saw it)
+4. Move through each item until you're ready to go!
+
+### Default Items
+
+- Wallet
+- Keys
+- Phone
+- Bag
+- Headphones
+- Medication
+- Water bottle
+
+### Customize It
+
+Go to **Settings** to:
+- Add your own items (laptop, glasses, lunch, etc.)
+- Turn items on or off
+- Reorder the list
+
+---
+
+## Leaving-Place Reminders (Don't Forget Your Stuff!)
+
+### The Problem
+
+ADHD brains often leave things behind - earbuds at the gym, laptop at work, jacket at a friend's house. It's frustrating!
+
+### The Solution
+
+Gadfly can remind you to check for your belongings **when you're leaving a place**. Using your phone's location, it knows when you're about to leave and pops up a quick checklist.
+
+### How to Set It Up
+
+1. Go to **Settings** > **Locations**
+2. Tap **Add Location**
+3. Choose a type (Gym, Work, Home, School, etc.)
+4. Give it a name
+5. Save your current location (or enter an address)
+
+### How It Works
+
+When you physically leave that location:
+1. Your phone buzzes
+2. A checklist appears: "Leaving the Gym - Quick checkout?"
+3. Walk through each item: "Do you have your headphones?"
+4. Tap **Yes** or **No** for each
+5. Leave with confidence!
+
+### Example Checklists
+
+**Gym:**
+- Water bottle
+- Headphones
+- Towel
+- Gym bag
+- Phone
+- Keys
+
+**Work:**
+- Laptop/charger
+- Badge/keycard
+- Phone
+- Keys
+- Wallet
+- Bag
+
+**Home:**
+- Wallet
+- Keys
+- Phone
+- Bag
+- Headphones
+
+### Requirements
+
+- Location permission set to "Always" (so it works in background)
+- Go to iPhone Settings > Gadfly > Location > Always
+
+### Privacy
+
+Your location data stays on your phone. Gadfly only checks if you're entering or leaving your saved locations - it doesn't track you.
+
+---
+
 ## Adding Tasks
 
 ### With Your Voice

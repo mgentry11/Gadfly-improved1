@@ -599,7 +599,7 @@ class NotificationService: ObservableObject {
         if reminderMinutesBefore > 0 {
             message = String(format: eventReminderMessages[2], "\(reminderMinutesBefore)", title)
         } else {
-            message = String(format: getRandomMessage(from: eventReminderMessages, category: "event"), title) // events don't use generated messages
+            message = String(format: getRandomMessage(from: eventReminderMessages, category: "event"), title)
         }
         content.title = personalityName
         content.body = message
@@ -626,6 +626,130 @@ class NotificationService: ObservableObject {
                 print("Error scheduling event reminder: \(error)")
             }
         }
+    }
+    
+    // MARK: - Transition Warnings (ADHD-friendly)
+    
+    private let transitionMessages30 = [
+        "Heads up: '%@' in 30 minutes. Time to start wrapping up.",
+        "30-minute warning: '%@' is coming up. Begin transitioning.",
+        "Transition alert: '%@' starts in half an hour. Prepare to switch gears."
+    ]
+    
+    private let transitionMessages15 = [
+        "15 minutes until '%@'. Time to finish what you're doing.",
+        "Almost time: '%@' in 15 minutes. Start your transition.",
+        "Quick heads up: '%@' is in 15. Wrap up your current task."
+    ]
+    
+    private let transitionMessages5 = [
+        "5 minutes! '%@' is about to start. Final wrap-up time.",
+        "Starting soon: '%@' in 5 minutes. Stop and prepare.",
+        "Last call: '%@' begins in 5 minutes. Time to switch!"
+    ]
+    
+    func scheduleTransitionWarnings(
+        eventId: String,
+        title: String,
+        eventDate: Date,
+        warningMinutes: [Int] = [30, 15, 5]
+    ) {
+        for minutes in warningMinutes {
+            let reminderTime = eventDate.addingTimeInterval(-Double(minutes * 60))
+            guard reminderTime > Date() else { continue }
+            
+            let content = UNMutableNotificationContent()
+            let messages: [String]
+            switch minutes {
+            case 30: messages = transitionMessages30
+            case 15: messages = transitionMessages15
+            case 5: messages = transitionMessages5
+            default: messages = ["'\(title)' in \(minutes) minutes"]
+            }
+            
+            let message = messages.randomElement() ?? messages[0]
+            content.title = "⏰ Transition Warning"
+            content.body = String(format: message, title)
+            content.sound = .default
+            content.categoryIdentifier = "EVENT_REMINDER"
+            content.userInfo = [
+                "eventId": eventId,
+                "eventTitle": title,
+                "type": "transition",
+                "minutesBefore": minutes
+            ]
+            
+            let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: reminderTime)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+            
+            let request = UNNotificationRequest(
+                identifier: "transition-\(eventId)-\(minutes)min",
+                content: content,
+                trigger: trigger
+            )
+            
+            center.add(request) { error in
+                if let error = error {
+                    print("Error scheduling transition warning: \(error)")
+                } else {
+                    print("✅ Scheduled \(minutes)-min transition warning for '\(title)'")
+                }
+            }
+        }
+    }
+    
+    // MARK: - NagMe Mode (Relentless Reminders)
+    
+    private let nagMeMessages = [
+        "Still here! '%@' is waiting for you. Tap Done when complete.",
+        "Checking in again: '%@'. I'll keep reminding until you're done!",
+        "Hey! '%@' - still on your list. Let me know when it's done.",
+        "Persistent reminder: '%@'. I believe in you! Tap Done when finished.",
+        "NagMe mode active: '%@'. Complete it and I'll stop bugging you!",
+        "Your task '%@' is patiently waiting. So am I. Less patiently.",
+        "Round N of reminding you about '%@'. You've got this!",
+        "Still '%@'? No worries, take your time. I'll be here.",
+    ]
+    
+    func scheduleNagMeReminders(
+        taskId: String,
+        title: String,
+        intervalMinutes: Int = 5,
+        maxReminders: Int = 20
+    ) {
+        cancelAllRemindersForTask(taskId: taskId)
+        
+        for i in 1...maxReminders {
+            let delaySeconds = Double(i * intervalMinutes * 60)
+            
+            let content = UNMutableNotificationContent()
+            let message = nagMeMessages.randomElement() ?? nagMeMessages[0]
+            content.title = "🔔 NagMe Mode"
+            content.body = String(format: message, title)
+            content.sound = .default
+            content.categoryIdentifier = "TASK_REMINDER"
+            content.userInfo = [
+                "taskId": taskId,
+                "taskTitle": title,
+                "type": "nagme",
+                "reminderNumber": i
+            ]
+            
+            let trigger = UNTimeIntervalNotificationTrigger(
+                timeInterval: delaySeconds,
+                repeats: false
+            )
+            
+            let request = UNNotificationRequest(
+                identifier: "nagme-\(taskId)-\(i)",
+                content: content,
+                trigger: trigger
+            )
+            
+            center.add(request)
+        }
+        
+        print("✅ Scheduled \(maxReminders) NagMe reminders for '\(title)' every \(intervalMinutes) min")
     }
 
     // MARK: - Schedule Nag Reminder (repeat reminder)

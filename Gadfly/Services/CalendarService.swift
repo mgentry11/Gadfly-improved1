@@ -3,14 +3,14 @@ import EventKit
 
 @MainActor
 class CalendarService: ObservableObject {
-    private let eventStore = EKEventStore()
+    let store = EKEventStore()
 
     @Published var calendarAuthStatus: EKAuthorizationStatus = .notDetermined
     @Published var reminderAuthStatus: EKAuthorizationStatus = .notDetermined
 
     func requestCalendarAccess() async -> Bool {
         do {
-            let granted = try await eventStore.requestFullAccessToEvents()
+            let granted = try await store.requestFullAccessToEvents()
             calendarAuthStatus = EKEventStore.authorizationStatus(for: .event)
             return granted
         } catch {
@@ -21,7 +21,7 @@ class CalendarService: ObservableObject {
 
     func requestReminderAccess() async -> Bool {
         do {
-            let granted = try await eventStore.requestFullAccessToReminders()
+            let granted = try await store.requestFullAccessToReminders()
             reminderAuthStatus = EKEventStore.authorizationStatus(for: .reminder)
             return granted
         } catch {
@@ -31,24 +31,24 @@ class CalendarService: ObservableObject {
     }
 
     func createCalendarEvent(_ parsedEvent: ParsedEvent) throws -> String {
-        let event = EKEvent(eventStore: eventStore)
+        let event = EKEvent(eventStore: store)
         event.title = parsedEvent.title
         event.startDate = parsedEvent.startDate
         event.endDate = parsedEvent.endDate ?? parsedEvent.startDate.addingTimeInterval(3600)
         event.location = parsedEvent.location
         event.notes = parsedEvent.notes
 
-        event.calendar = eventStore.defaultCalendarForNewEvents
+        event.calendar = store.defaultCalendarForNewEvents
 
         event.addAlarm(EKAlarm(relativeOffset: -900))
 
-        try eventStore.save(event, span: .thisEvent)
+        try store.save(event, span: .thisEvent)
 
         return event.eventIdentifier
     }
 
     func createReminder(_ parsedReminder: ParsedReminder) throws -> String {
-        let reminder = EKReminder(eventStore: eventStore)
+        let reminder = EKReminder(eventStore: store)
         reminder.title = parsedReminder.title
 
         let components = Calendar.current.dateComponents(
@@ -60,15 +60,15 @@ class CalendarService: ObservableObject {
         let alarm = EKAlarm(absoluteDate: parsedReminder.triggerDate)
         reminder.addAlarm(alarm)
 
-        reminder.calendar = eventStore.defaultCalendarForNewReminders()
+        reminder.calendar = store.defaultCalendarForNewReminders()
 
-        try eventStore.save(reminder, commit: true)
+        try store.save(reminder, commit: true)
 
         return reminder.calendarItemIdentifier
     }
 
     func createTask(_ parsedTask: ParsedTask) throws -> String {
-        let reminder = EKReminder(eventStore: eventStore)
+        let reminder = EKReminder(eventStore: store)
         reminder.title = parsedTask.title
 
         if let deadline = parsedTask.deadline {
@@ -91,9 +91,9 @@ class CalendarService: ObservableObject {
             reminder.priority = 9
         }
 
-        reminder.calendar = eventStore.defaultCalendarForNewReminders()
+        reminder.calendar = store.defaultCalendarForNewReminders()
 
-        try eventStore.save(reminder, commit: true)
+        try store.save(reminder, commit: true)
 
         return reminder.calendarItemIdentifier
     }
@@ -102,23 +102,23 @@ class CalendarService: ObservableObject {
         let startDate = Date()
         let endDate = Calendar.current.date(byAdding: .day, value: days, to: startDate)!
 
-        let predicate = eventStore.predicateForEvents(
+        let predicate = store.predicateForEvents(
             withStart: startDate,
             end: endDate,
             calendars: nil
         )
 
-        return eventStore.events(matching: predicate).sorted { $0.startDate < $1.startDate }
+        return store.events(matching: predicate).sorted { $0.startDate < $1.startDate }
     }
 
     func fetchReminders(includeCompleted: Bool = false) async -> [EKReminder] {
         let predicate: NSPredicate
         if includeCompleted {
             // Fetch all reminders (completed and incomplete)
-            predicate = eventStore.predicateForReminders(in: nil)
+            predicate = store.predicateForReminders(in: nil)
         } else {
             // Fetch only incomplete reminders
-            predicate = eventStore.predicateForIncompleteReminders(
+            predicate = store.predicateForIncompleteReminders(
                 withDueDateStarting: nil,
                 ending: nil,
                 calendars: nil
@@ -126,7 +126,7 @@ class CalendarService: ObservableObject {
         }
 
         return await withCheckedContinuation { continuation in
-            eventStore.fetchReminders(matching: predicate) { reminders in
+            store.fetchReminders(matching: predicate) { reminders in
                 let sorted = (reminders ?? []).sorted { r1, r2 in
                     // Sort incomplete first, then by date
                     if r1.isCompleted != r2.isCompleted {
@@ -148,7 +148,7 @@ class CalendarService: ObservableObject {
         } else {
             reminder.completionDate = nil
         }
-        try eventStore.save(reminder, commit: true)
+        try store.save(reminder, commit: true)
     }
 
     func updateReminder(_ reminder: EKReminder, title: String, notes: String?, dueDate: Date?, priority: Int) async throws {
@@ -171,17 +171,17 @@ class CalendarService: ObservableObject {
             reminder.alarms?.forEach { reminder.removeAlarm($0) }
         }
 
-        try eventStore.save(reminder, commit: true)
+        try store.save(reminder, commit: true)
     }
 
     func deleteReminder(_ reminder: EKReminder) async throws {
-        try eventStore.remove(reminder, commit: true)
+        try store.remove(reminder, commit: true)
     }
 
     func completeReminder(_ reminder: EKReminder) async throws {
         reminder.isCompleted = true
         reminder.completionDate = Date()
-        try eventStore.save(reminder, commit: true)
+        try store.save(reminder, commit: true)
     }
 
     // MARK: - Push Task to Later/Tomorrow
@@ -208,7 +208,7 @@ class CalendarService: ObservableObject {
         let alarm = EKAlarm(absoluteDate: tomorrow)
         reminder.addAlarm(alarm)
 
-        try eventStore.save(reminder, commit: true)
+        try store.save(reminder, commit: true)
         print("📅 Pushed '\(reminder.title ?? "task")' to tomorrow")
     }
 
@@ -242,7 +242,7 @@ class CalendarService: ObservableObject {
         print("   isCompleted AFTER setting alarm: \(reminder.isCompleted)")
 
         // Save
-        try eventStore.save(reminder, commit: true)
+        try store.save(reminder, commit: true)
 
         print("   isCompleted AFTER save: \(reminder.isCompleted)")
 
@@ -266,12 +266,12 @@ class CalendarService: ObservableObject {
         let alarm = EKAlarm(absoluteDate: laterDate)
         reminder.addAlarm(alarm)
 
-        try eventStore.save(reminder, commit: true)
+        try store.save(reminder, commit: true)
         print("⏰ Pushed '\(reminder.title ?? "task")' to \(hours) hours later")
     }
 
     func deleteEvent(_ event: EKEvent) throws {
-        try eventStore.remove(event, span: .thisEvent)
+        try store.remove(event, span: .thisEvent)
     }
 
     func updateEvent(_ event: EKEvent, title: String, startDate: Date, endDate: Date, location: String?, notes: String?) throws {
@@ -280,7 +280,7 @@ class CalendarService: ObservableObject {
         event.endDate = endDate
         event.location = location
         event.notes = notes
-        try eventStore.save(event, span: .thisEvent)
+        try store.save(event, span: .thisEvent)
     }
 
     func saveAllItems(

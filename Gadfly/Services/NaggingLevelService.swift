@@ -12,12 +12,14 @@ class NaggingLevelService: ObservableObject {
         case gentle = "gentle"
         case moderate = "moderate"
         case persistent = "persistent"
+        case relentless = "relentless"
 
         var displayName: String {
             switch self {
             case .gentle: return "Gentle"
             case .moderate: return "Moderate"
             case .persistent: return "Persistent"
+            case .relentless: return "NagMe Mode"
             }
         }
 
@@ -26,6 +28,7 @@ class NaggingLevelService: ObservableObject {
             case .gentle: return "One reminder per task, no pressure"
             case .moderate: return "Reminder + follow-up, supportive nudges"
             case .persistent: return "Multiple reminders, won't let you forget"
+            case .relentless: return "Repeats every 5 min until you tap Done"
             }
         }
 
@@ -34,6 +37,7 @@ class NaggingLevelService: ObservableObject {
             case .gentle: return "leaf.fill"
             case .moderate: return "hand.wave.fill"
             case .persistent: return "bell.badge.fill"
+            case .relentless: return "bell.and.waves.left.and.right.fill"
             }
         }
 
@@ -42,25 +46,30 @@ class NaggingLevelService: ObservableObject {
             case .gentle: return .green
             case .moderate: return .orange
             case .persistent: return .red
+            case .relentless: return .purple
             }
         }
 
-        /// Minutes between reminders for overdue tasks
         var reminderInterval: Int {
             switch self {
-            case .gentle: return 0 // No repeat
+            case .gentle: return 0
             case .moderate: return 30
             case .persistent: return 15
+            case .relentless: return 5
             }
         }
 
-        /// How many times to remind for a single task
         var maxReminders: Int {
             switch self {
             case .gentle: return 1
             case .moderate: return 2
             case .persistent: return 5
+            case .relentless: return 999
             }
+        }
+        
+        var isRelentless: Bool {
+            self == .relentless
         }
     }
 
@@ -209,7 +218,6 @@ class NaggingLevelService: ObservableObject {
         medicationTimes.remove(at: index)
     }
 
-    /// Get appropriate message based on nagging level
     func getNagMessage(for context: String) -> String {
         switch naggingLevel {
         case .gentle:
@@ -218,6 +226,8 @@ class NaggingLevelService: ObservableObject {
             return "Friendly reminder: \(context)"
         case .persistent:
             return "Hey! Don't forget: \(context)"
+        case .relentless:
+            return "Still waiting on: \(context) - tap Done when complete!"
         }
     }
 

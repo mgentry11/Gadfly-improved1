@@ -168,6 +168,8 @@ struct TasksListView: View {
         }.sorted { (dueDate(for: $0) ?? .distantFuture) < (dueDate(for: $1) ?? .distantFuture) }
     }
 
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         ZStack {
             NavigationStack {
@@ -184,13 +186,30 @@ struct TasksListView: View {
                 .navigationTitle("Tasks")
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            Task { await toggleVoiceCommand() }
-                        } label: {
-                            Image(systemName: isListening ? "waveform.circle.fill" : "mic.circle.fill")
-                                .font(.title2)
-                                .foregroundStyle(isListening ? .red : Color.themeAccent)
-                                .symbolEffect(.pulse, isActive: isListening)
+                        HStack(spacing: 12) {
+                            Button {
+                                dismiss()
+                                appState.selectedTab = 0
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "scope")
+                                    Text("Focus")
+                                }
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(themeColors.accent)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Capsule().fill(themeColors.accent.opacity(0.15)))
+                            }
+                            
+                            Button {
+                                Task { await toggleVoiceCommand() }
+                            } label: {
+                                Image(systemName: isListening ? "waveform.circle.fill" : "mic.circle.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(isListening ? .red : Color.themeAccent)
+                                    .symbolEffect(.pulse, isActive: isListening)
+                            }
                         }
                     }
                     ToolbarItem(placement: .topBarTrailing) {

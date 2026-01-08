@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		031B70C07F8738FA886615C2 /* QuickCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6620B3F3BEF65B0F143D4C28 /* QuickCheckView.swift */; };
 		05EFDE3CDDB4085A5998AAB5 /* AccountabilityTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D553E2AFE192A235E70AB3 /* AccountabilityTracker.swift */; };
 		0ABDEB363414C2CF4DDFE26C /* NagContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98A31C2ED45B2BFFD266626 /* NagContactsService.swift */; };
 		0DAEB3143CB8D1F91EF1364D /* PersonalityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F902F13EB08AA09CF886B3 /* PersonalityService.swift */; };
@@ -16,6 +17,7 @@
 		13CFCDFE35FE48C6A9EDB8A8 /* LocationsManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5764B4B33DC543659ABA7907 /* LocationsManagerView.swift */; };
 		15F9C9FD9B724B73835D85BC /* CheckoutChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC378AE2B15A475FB3557891 /* CheckoutChecklistView.swift */; };
 		162CC3D24ACCF25168EE798C /* ActiveFocusSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E6A99CE705776F1084EE3C9 /* ActiveFocusSessionView.swift */; };
+		16F61DC0B2B8DF10F4FD458E /* SimpleThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BA744AFFF7EAD3776038CB /* SimpleThemePicker.swift */; };
 		18A2B8FCC54549A88ED898B5 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA97D68E1B414EB986574CF9 /* ConfettiView.swift */; };
 		194511BC70990766A78AB414 /* AsyncTimeout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DA168AF2DE44C75C85A3F8 /* AsyncTimeout.swift */; };
 		1AE72DCD6E6D57DE636C126D /* TimesheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41203D5B3EAAF3D303552D9 /* TimesheetView.swift */; };
@@ -32,10 +34,12 @@
 		318D2D197FD6F0945621C25C /* MorningChecklistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0AE1DAF0366DB2C401BA8F1 /* MorningChecklistService.swift */; };
 		32F0CF15DB532ABC62168F71 /* PushCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBF03F98FA33664C3129529 /* PushCelebrationView.swift */; };
 		3C317897C2612E692B5F71DE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A79D170A84850C13DB42CB /* AppDelegate.swift */; };
+		3EE791837A4FA1F1930866E4 /* GuidedHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBD91AF90C7DBC3DC091763F /* GuidedHomeView.swift */; };
 		4104D284394F632D51A47A4B /* SimpleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CB3FCC19AC8C8B237DA530 /* SimpleSettingsView.swift */; };
 		415FE712A7954ADE888808F1 /* FocusHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB467C10E2E4C07A967D6E4 /* FocusHomeView.swift */; };
 		416E4D41EF5A4779E2EE0A78 /* ConnectionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2134D18210FCE429777B0D /* ConnectionsListView.swift */; };
 		498D34DCDD1CFC0A20D550BC /* SessionStateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72229982C2BFCA667E5E8BAE /* SessionStateService.swift */; };
+		4AA2A2C4E38527A691246B96 /* MorningPrepService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B45C5A8B70143B9654FAFE /* MorningPrepService.swift */; };
 		4FA33387FF744B4EBA6E178F /* RewardsSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564A44DD530F4EFAB835753A /* RewardsSystem.swift */; };
 		4FCB70A58E39FF58878A65DD /* TaskAgingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD024C56FADB4D8652369E1B /* TaskAgingService.swift */; };
 		529FEA83803B4D5EBDF51B64 /* TaskAttackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CED4EF130D54C8F8A99A863 /* TaskAttackView.swift */; };
@@ -54,6 +58,7 @@
 		7489FA82887B22B904B4F137 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92DFF40840AA345A928F2CE0 /* NotificationService.swift */; };
 		77551ADBA98A479986D78763 /* SmartScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D02C3BACF2E489CA1980380 /* SmartScheduler.swift */; };
 		78F692100A575048749F7E69 /* MorningIntentionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D5E2DF26EF9EE993D8AA84 /* MorningIntentionView.swift */; };
+		7EB155ABB49578AB6278A1FA /* SmartLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6AA246C76F6992E7A7DF89C /* SmartLocationService.swift */; };
 		80824E2E5D99D12FF6F1A351 /* MorningChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA0F02FE16B302A7DFDAAC4 /* MorningChecklistView.swift */; };
 		84EA11ECF4364E4F808ABB37 /* MomentumTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF88B6CCD964C8AAE5E8C5B /* MomentumTracker.swift */; };
 		87716A7E157935A4E6B7CFCD /* NaggingLevelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6F436927009861F1227516 /* NaggingLevelService.swift */; };
@@ -74,6 +79,7 @@
 		A1000000000000000000000B /* TasksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001B /* TasksListView.swift */; };
 		A1000000000000000000000C /* CalendarListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001C /* CalendarListView.swift */; };
 		A1000000000000000000000D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001D /* SettingsView.swift */; };
+		A5F25E3D068C6FA932669F37 /* SimpleFocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DEE541B03707CEDCDF327B /* SimpleFocusView.swift */; };
 		A5FBDA7693F6F44537207726 /* UniversalEscapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DF3BEC16CCD1282DCF4AC8 /* UniversalEscapeView.swift */; };
 		A6EF62B0871441AF8A00D7EB /* PresetModeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6806722D89BA4BDA8290177A /* PresetModeSelector.swift */; };
 		A75927D594F222EBE27C0F65 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FEE1D132B13930DF00F7D8B /* AVFoundation.framework */; };
@@ -81,6 +87,7 @@
 		A812B1522E574C0AA0F037CA /* BodyDoublingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD552BEED6BC43C28FA75971 /* BodyDoublingView.swift */; };
 		AB4C59892237441C9BD67574 /* EnergyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD918135880410D8499F3E8 /* EnergyService.swift */; };
 		AF0A1AC69880B1A758E36B95 /* ManageSelfChecksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FCFD496FB257A4555FC8C /* ManageSelfChecksView.swift */; };
+		B04FACB263A4E84B2B717B7B /* QuickCheckService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596C721F22FC1B00D5CC6051 /* QuickCheckService.swift */; };
 		B3A342C1CE3B45DA8220873D /* DurationEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A8E645D94C41C9BA9574C3 /* DurationEstimator.swift */; };
 		B9C70DC9CE654AABAE2931B8 /* SmartSchedulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D75E6B489D4D83BE47339D /* SmartSchedulerView.swift */; };
 		BB3A3888AB526B722329E938 /* GadflyWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB1A617413E2CE4427EC9E3 /* GadflyWatchApp.swift */; };
@@ -95,6 +102,7 @@
 		DC76FA49078D934489B8B26A /* TaskTriageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4039F2E47F5C0332B0F5CF /* TaskTriageView.swift */; };
 		E2F75D580ADB072E9EF44D22 /* BackgroundAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5873CC7C151DBE1AA81FD9A9 /* BackgroundAudioManager.swift */; };
 		EA4A5525F9A7459C9DA01D2D /* MedicationWindowService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B226EC150E741B6BF3F9F12 /* MedicationWindowService.swift */; };
+		EAFDF737063BB122D5EAAA36 /* MorningPrepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41CF63D6A585D5CC8401784 /* MorningPrepView.swift */; };
 		EC09EC19B46175CDA7431805 /* DayStructureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00895B78B0B7D1D843379B17 /* DayStructureService.swift */; };
 		ECA3B35510265D675250BB50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8A600B19B1FE03462F163F0 /* Assets.xcassets */; };
 		ED459FD9B5AC63559E34B7DA /* EveningCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF0424560603A1C9A32DE58 /* EveningCheckInView.swift */; };
@@ -126,6 +134,7 @@
 /* Begin PBXFileReference section */
 		00895B78B0B7D1D843379B17 /* DayStructureService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DayStructureService.swift; sourceTree = "<group>"; };
 		01D883A51D1844E997BBD698 /* MyRewardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRewardsView.swift; sourceTree = "<group>"; };
+		15B45C5A8B70143B9654FAFE /* MorningPrepService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MorningPrepService.swift; sourceTree = "<group>"; };
 		1A2054E11A976B47D4ED1352 /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
 		1E6F436927009861F1227516 /* NaggingLevelService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NaggingLevelService.swift; sourceTree = "<group>"; };
 		21D5E2DF26EF9EE993D8AA84 /* MorningIntentionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MorningIntentionView.swift; sourceTree = "<group>"; };
@@ -149,9 +158,11 @@
 		564A44DD530F4EFAB835753A /* RewardsSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsSystem.swift; sourceTree = "<group>"; };
 		5764B4B33DC543659ABA7907 /* LocationsManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsManagerView.swift; sourceTree = "<group>"; };
 		5873CC7C151DBE1AA81FD9A9 /* BackgroundAudioManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackgroundAudioManager.swift; sourceTree = "<group>"; };
+		596C721F22FC1B00D5CC6051 /* QuickCheckService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuickCheckService.swift; sourceTree = "<group>"; };
 		5AE07F44E64A4FBC85F0A430 /* TimeRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeRingView.swift; sourceTree = "<group>"; };
 		5FDD74EA9C654AB00CDE2852 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		61E7AFE0F0AF44F9B1E332DC /* TaskBreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskBreakdownView.swift; sourceTree = "<group>"; };
+		6620B3F3BEF65B0F143D4C28 /* QuickCheckView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuickCheckView.swift; sourceTree = "<group>"; };
 		6806722D89BA4BDA8290177A /* PresetModeSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetModeSelector.swift; sourceTree = "<group>"; };
 		68D7CFCC18BE4A25B7F8CC72 /* MomentumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentumView.swift; sourceTree = "<group>"; };
 		68DBB1AACA9990EEACBC29D2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -165,6 +176,7 @@
 		7C2E6BD70E0A4C2980DD4875 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		7D02C3BACF2E489CA1980380 /* SmartScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartScheduler.swift; sourceTree = "<group>"; };
 		7F91CDF0C4424AE08A8022DB /* TaskAttackAdvisor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskAttackAdvisor.swift; sourceTree = "<group>"; };
+		81BA744AFFF7EAD3776038CB /* SimpleThemePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimpleThemePicker.swift; sourceTree = "<group>"; };
 		8442A4EAFF69E2E051D27CB7 /* GoalsService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GoalsService.swift; sourceTree = "<group>"; };
 		87D553E2AFE192A235E70AB3 /* AccountabilityTracker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AccountabilityTracker.swift; sourceTree = "<group>"; };
 		8C4D40CD9121108C5D19FBAC /* MessageLibrary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MessageLibrary.swift; sourceTree = "<group>"; };
@@ -201,10 +213,12 @@
 		C9263F036EEFEDFD62168497 /* SimpleVoicePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimpleVoicePicker.swift; sourceTree = "<group>"; };
 		CACD5B309D454C5F94420EDC /* GadflyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GadflyTask.swift; sourceTree = "<group>"; };
 		CBBF03F98FA33664C3129529 /* PushCelebrationView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PushCelebrationView.swift; sourceTree = "<group>"; };
+		CBD91AF90C7DBC3DC091763F /* GuidedHomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GuidedHomeView.swift; sourceTree = "<group>"; };
 		CD024C56FADB4D8652369E1B /* TaskAgingService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TaskAgingService.swift; sourceTree = "<group>"; };
 		CFD918135880410D8499F3E8 /* EnergyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyService.swift; sourceTree = "<group>"; };
 		D0F902F13EB08AA09CF886B3 /* PersonalityService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PersonalityService.swift; sourceTree = "<group>"; };
 		D3CB3FCC19AC8C8B237DA530 /* SimpleSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimpleSettingsView.swift; sourceTree = "<group>"; };
+		D41CF63D6A585D5CC8401784 /* MorningPrepView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MorningPrepView.swift; sourceTree = "<group>"; };
 		D6B72198A77E49CAA4E23A6A /* ManageCustomCheckInsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageCustomCheckInsView.swift; sourceTree = "<group>"; };
 		D7CF793AFAAB7A153D31DFF5 /* TimesheetService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TimesheetService.swift; sourceTree = "<group>"; };
 		DA7E19462BAE4602B31A28B3 /* BodyDoublingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDoublingService.swift; sourceTree = "<group>"; };
@@ -218,9 +232,11 @@
 		EBB467C10E2E4C07A967D6E4 /* FocusHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusHomeView.swift; sourceTree = "<group>"; };
 		EC378AE2B15A475FB3557891 /* CheckoutChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutChecklistView.swift; sourceTree = "<group>"; };
 		F0DAB193AAD64352AD02BFDE /* EnergyCheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyCheckInView.swift; sourceTree = "<group>"; };
-		F1DAC294BBD75463BE13CFEF /* CheckInQuickSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInQuickSetupView.swift; sourceTree = "<group>"; };
 		F1A3284AD314E968BEBD0C49 /* Gadfly Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gadfly Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1DAC294BBD75463BE13CFEF /* CheckInQuickSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInQuickSetupView.swift; sourceTree = "<group>"; };
 		F2DB1A789CA173BF5EBD1862 /* RecentlySpokenService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecentlySpokenService.swift; sourceTree = "<group>"; };
+		F5DEE541B03707CEDCDF327B /* SimpleFocusView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SimpleFocusView.swift; sourceTree = "<group>"; };
+		F6AA246C76F6992E7A7DF89C /* SmartLocationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SmartLocationService.swift; sourceTree = "<group>"; };
 		F98A31C2ED45B2BFFD266626 /* NagContactsService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NagContactsService.swift; sourceTree = "<group>"; };
 		FAC058A774BF29F265D90A5E /* GadflyAPIService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GadflyAPIService.swift; sourceTree = "<group>"; };
 		FD552BEED6BC43C28FA75971 /* BodyDoublingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDoublingView.swift; sourceTree = "<group>"; };
@@ -366,6 +382,11 @@
 				31DF3BEC16CCD1282DCF4AC8 /* UniversalEscapeView.swift */,
 				D3CB3FCC19AC8C8B237DA530 /* SimpleSettingsView.swift */,
 				C9263F036EEFEDFD62168497 /* SimpleVoicePicker.swift */,
+				CBD91AF90C7DBC3DC091763F /* GuidedHomeView.swift */,
+				F5DEE541B03707CEDCDF327B /* SimpleFocusView.swift */,
+				81BA744AFFF7EAD3776038CB /* SimpleThemePicker.swift */,
+				D41CF63D6A585D5CC8401784 /* MorningPrepView.swift */,
+				6620B3F3BEF65B0F143D4C28 /* QuickCheckView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -410,6 +431,9 @@
 				F2DB1A789CA173BF5EBD1862 /* RecentlySpokenService.swift */,
 				72229982C2BFCA667E5E8BAE /* SessionStateService.swift */,
 				4663B7D03E42FDBB0169E839 /* CustomDictionaryService.swift */,
+				15B45C5A8B70143B9654FAFE /* MorningPrepService.swift */,
+				596C721F22FC1B00D5CC6051 /* QuickCheckService.swift */,
+				F6AA246C76F6992E7A7DF89C /* SmartLocationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -635,6 +659,14 @@
 				194511BC70990766A78AB414 /* AsyncTimeout.swift in Sources */,
 				D84C62C0A1F82197BE08C028 /* ExpandableActionButton.swift in Sources */,
 				25478C035E810D7D985F739D /* CustomDictionaryService.swift in Sources */,
+				3EE791837A4FA1F1930866E4 /* GuidedHomeView.swift in Sources */,
+				A5F25E3D068C6FA932669F37 /* SimpleFocusView.swift in Sources */,
+				16F61DC0B2B8DF10F4FD458E /* SimpleThemePicker.swift in Sources */,
+				EAFDF737063BB122D5EAAA36 /* MorningPrepView.swift in Sources */,
+				031B70C07F8738FA886615C2 /* QuickCheckView.swift in Sources */,
+				4AA2A2C4E38527A691246B96 /* MorningPrepService.swift in Sources */,
+				B04FACB263A4E84B2B717B7B /* QuickCheckService.swift in Sources */,
+				7EB155ABB49578AB6278A1FA /* SmartLocationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -831,6 +863,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -859,6 +892,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

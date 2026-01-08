@@ -274,7 +274,7 @@ class TaskAttackAdvisor: ObservableObject {
         if let dueDate = task.dueDate, dueDate < Date() {
             return TimingRecommendation(
                 isGoodTime: true,
-                reason: "This is overdue - now is the time!",
+                reason: "This one's been waiting - let's do it now!",
                 suggestedTime: nil
             )
         }
@@ -471,10 +471,9 @@ class TaskAttackAdvisor: ObservableObject {
             let isOverdue = task.dueDate.map { $0 < Date() } ?? false
             let isDueToday = task.dueDate.map { Calendar.current.isDateInToday($0) } ?? false
 
-            // Overdue gets highest priority
             if isOverdue {
                 score += 100
-                reason = "Overdue - let's get this done"
+                reason = "Been waiting for you - let's do it!"
             }
 
             // Due today is important

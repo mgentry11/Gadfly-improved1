@@ -324,10 +324,10 @@ struct SettingsView: View {
             HStack {
                 Image(systemName: "theatermasks.fill")
                     .foregroundStyle(themeColors.accent)
-                Text("How should I talk to you?")
+                Text("Pick Your Vibe")
             }
         } footer: {
-            Text("Tap to select, then confirm to apply changes.")
+            Text("These 5 personalities work best for ADHD. Tap to select.")
         }
         .alert("Change Personality?", isPresented: $showPersonalityConfirmation) {
             Button("Apply Changes") {

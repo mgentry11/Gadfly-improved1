@@ -812,6 +812,24 @@ class AppState: ObservableObject {
 
 // MARK: - Theme Manager (Observable)
 
+enum ColorblindMode: String, CaseIterable, Identifiable {
+    case none = "none"
+    case protanopia = "protanopia"
+    case deuteranopia = "deuteranopia"
+    case tritanopia = "tritanopia"
+    
+    var id: String { rawValue }
+    
+    var displayName: String {
+        switch self {
+        case .none: return "Normal"
+        case .protanopia: return "Red-Blind"
+        case .deuteranopia: return "Green-Blind"
+        case .tritanopia: return "Blue-Blind"
+        }
+    }
+}
+
 class ThemeColors: ObservableObject {
     static let shared = ThemeColors()
     private let lock = NSLock()
@@ -819,6 +837,42 @@ class ThemeColors: ObservableObject {
     @Published var currentTheme: ColorTheme {
         didSet {
             UserDefaults.standard.set(currentTheme.rawValue, forKey: "selected_color_theme")
+        }
+    }
+    
+    @Published var isLightMode: Bool {
+        didSet {
+            UserDefaults.standard.set(isLightMode, forKey: "is_light_mode")
+        }
+    }
+    
+    @Published var highContrastMode: Bool {
+        didSet {
+            UserDefaults.standard.set(highContrastMode, forKey: "high_contrast_mode")
+        }
+    }
+    
+    @Published var colorblindMode: ColorblindMode {
+        didSet {
+            UserDefaults.standard.set(colorblindMode.rawValue, forKey: "colorblind_mode")
+        }
+    }
+    
+    @Published var reduceMotion: Bool {
+        didSet {
+            UserDefaults.standard.set(reduceMotion, forKey: "reduce_motion")
+        }
+    }
+    
+    @Published var muteSounds: Bool {
+        didSet {
+            UserDefaults.standard.set(muteSounds, forKey: "mute_sounds")
+        }
+    }
+    
+    @Published var reduceHaptics: Bool {
+        didSet {
+            UserDefaults.standard.set(reduceHaptics, forKey: "reduce_haptics")
         }
     }
 
@@ -829,26 +883,93 @@ class ThemeColors: ObservableObject {
         } else {
             self.currentTheme = .gadfly
         }
+        self.isLightMode = UserDefaults.standard.bool(forKey: "is_light_mode")
+        self.highContrastMode = UserDefaults.standard.bool(forKey: "high_contrast_mode")
+        if let cbMode = UserDefaults.standard.string(forKey: "colorblind_mode"),
+           let mode = ColorblindMode(rawValue: cbMode) {
+            self.colorblindMode = mode
+        } else {
+            self.colorblindMode = .none
+        }
+        self.reduceMotion = UserDefaults.standard.bool(forKey: "reduce_motion")
+        self.muteSounds = UserDefaults.standard.bool(forKey: "mute_sounds")
+        self.reduceHaptics = UserDefaults.standard.bool(forKey: "reduce_haptics")
     }
 
-    // Convenience accessors
-    var accent: Color { currentTheme.accent }
-    var accentDark: Color { currentTheme.accentDark }
-    var accentLight: Color { currentTheme.accentLight }
-    var background: Color { currentTheme.background }
-    var secondary: Color { currentTheme.secondary }
+    var accent: Color { adjustedColor(currentTheme.accent) }
+    var accentDark: Color { adjustedColor(currentTheme.accentDark) }
+    var accentLight: Color { adjustedColor(currentTheme.accentLight) }
+    
+    var background: Color {
+        if isLightMode {
+            return highContrastMode ? Color.white : Color(hex: "F5F5F5")
+        }
+        return currentTheme.background
+    }
+    
+    var secondary: Color {
+        if isLightMode {
+            return highContrastMode ? Color(hex: "E0E0E0") : Color(hex: "EBEBEB")
+        }
+        return currentTheme.secondary
+    }
+    
     var secondaryMid: Color { currentTheme.secondaryMid }
     var secondaryLight: Color { currentTheme.secondaryLight }
-    var taskColor: Color { currentTheme.taskColor }
-    var eventColor: Color { currentTheme.eventColor }
-    var success: Color { currentTheme.successColor }
-    var warning: Color { currentTheme.warningColor }
-    var error: Color { currentTheme.errorColor }
-    var priorityHigh: Color { currentTheme.priorityHigh }
-    var priorityMedium: Color { currentTheme.priorityMedium }
-    var priorityLow: Color { currentTheme.priorityLow }
-    var text: Color { currentTheme.textPrimary }
-    var subtext: Color { currentTheme.textSecondary }
+    var taskColor: Color { adjustedColor(currentTheme.taskColor) }
+    var eventColor: Color { adjustedColor(currentTheme.eventColor) }
+    
+    var success: Color { colorblindSafeSuccess }
+    var warning: Color { colorblindSafeWarning }
+    var error: Color { colorblindSafeError }
+    var priorityHigh: Color { colorblindSafeError }
+    var priorityMedium: Color { colorblindSafeWarning }
+    var priorityLow: Color { colorblindSafeSuccess }
+    
+    var text: Color {
+        if isLightMode {
+            return highContrastMode ? Color.black : Color(hex: "1A1A1A")
+        }
+        return highContrastMode ? Color.white : currentTheme.textPrimary
+    }
+    
+    var subtext: Color {
+        if isLightMode {
+            return highContrastMode ? Color(hex: "333333") : Color(hex: "666666")
+        }
+        return highContrastMode ? Color(hex: "CCCCCC") : currentTheme.textSecondary
+    }
+    
+    private func adjustedColor(_ color: Color) -> Color {
+        if highContrastMode {
+            return color
+        }
+        return color
+    }
+    
+    private var colorblindSafeSuccess: Color {
+        switch colorblindMode {
+        case .none: return Color(hex: "22C55E")
+        case .protanopia, .deuteranopia: return Color(hex: "0EA5E9")
+        case .tritanopia: return Color(hex: "22C55E")
+        }
+    }
+    
+    private var colorblindSafeWarning: Color {
+        switch colorblindMode {
+        case .none: return Color(hex: "F59E0B")
+        case .protanopia, .deuteranopia: return Color(hex: "F59E0B")
+        case .tritanopia: return Color(hex: "EC4899")
+        }
+    }
+    
+    private var colorblindSafeError: Color {
+        switch colorblindMode {
+        case .none: return Color(hex: "EF4444")
+        case .protanopia, .deuteranopia: return Color(hex: "EC4899")
+        case .tritanopia: return Color(hex: "EF4444")
+        }
+    }
 }
 
 // MARK: - Theme (Static accessors for convenience)

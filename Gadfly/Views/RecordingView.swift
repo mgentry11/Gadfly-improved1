@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RecordingView: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var themeColors = ThemeColors.shared
     @StateObject private var speechService = SpeechService()
     @StateObject private var openAIService = OpenAIService()
@@ -21,6 +22,8 @@ struct RecordingView: View {
     @State private var recordingTimer: Timer?
     @State private var textInput: String = ""
     @State private var isShowingTextInput: Bool = false
+    @State private var isBrainDumpMode: Bool = false
+    @State private var brainDumpText: String = ""
     @FocusState private var isTextFieldFocused: Bool
 
     enum ConversationPhase {
@@ -30,6 +33,7 @@ struct RecordingView: View {
         case speaking
         case awaitingConfirmation
         case checkInSetup
+        case brainDump
     }
     
     enum CheckInSetupStep {
@@ -66,7 +70,9 @@ struct RecordingView: View {
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(spacing: 16) {
-                                if allMessages.isEmpty {
+                                if currentPhase == .brainDump {
+                                    brainDumpCard
+                                } else if allMessages.isEmpty {
                                     emptyStateCard
                                 } else {
                                     ForEach(allMessages) { message in
@@ -131,24 +137,24 @@ struct RecordingView: View {
 
     private var headerView: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("How")
-                    .font(.system(size: 32, weight: .light))
-                    .foregroundStyle(Color.themeSubtext) +
-                Text(" Can I Help")
-                    .font(.system(size: 32, weight: .semibold))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [Color.themeAccent, Color.themeAccent.opacity(0.8)],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                Text("You Today?")
-                    .font(.system(size: 32, weight: .semibold))
-                    .foregroundStyle(Color.themeText)
+            Button {
+                appState.selectedTab = 0
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "scope")
+                        .font(.system(size: 16, weight: .semibold))
+                    Text("Focus")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+                .foregroundStyle(themeColors.accent)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(
+                    Capsule()
+                        .fill(themeColors.accent.opacity(0.15))
+                )
             }
-
+            
             Spacer()
 
             VStack(alignment: .trailing, spacing: 8) {
@@ -210,7 +216,24 @@ struct RecordingView: View {
                 .foregroundStyle(Color.themeSubtext.opacity(0.7))
                 .multilineTextAlignment(.center)
             
-
+            Button {
+                isBrainDumpMode = true
+                currentPhase = .brainDump
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "brain.head.profile")
+                        .font(.body)
+                    Text("Brain Dump Mode")
+                        .font(.subheadline.weight(.medium))
+                }
+                .foregroundStyle(Color.themeAccent)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(
+                    Capsule()
+                        .fill(Color.themeAccent.opacity(0.15))
+                )
+            }
         }
         .padding(24)
         .frame(maxWidth: .infinity)
@@ -222,6 +245,132 @@ struct RecordingView: View {
                         .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                 )
         )
+    }
+    
+    private var brainDumpCard: some View {
+        VStack(spacing: 16) {
+            HStack {
+                Image(systemName: "brain.head.profile")
+                    .font(.title2)
+                    .foregroundStyle(Color.themeAccent)
+                Text("Brain Dump")
+                    .font(.headline)
+                    .foregroundStyle(Color.themeText)
+                Spacer()
+                Button {
+                    isBrainDumpMode = false
+                    currentPhase = .idle
+                    brainDumpText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(Color.themeSubtext)
+                }
+            }
+            
+            Text("Just let it all out. Type or speak everything on your mind. I'll organize it into tasks when you're done.")
+                .font(.subheadline)
+                .foregroundStyle(Color.themeSubtext)
+                .multilineTextAlignment(.leading)
+            
+            TextEditor(text: $brainDumpText)
+                .frame(minHeight: 150, maxHeight: 250)
+                .padding(12)
+                .background(Color.themeSecondary)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.themeAccent.opacity(0.3), lineWidth: 1)
+                )
+            
+            HStack(spacing: 12) {
+                Button {
+                    startListening()
+                } label: {
+                    HStack {
+                        Image(systemName: "mic.fill")
+                        Text("Speak")
+                    }
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Color.themeAccent)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 44)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.themeAccent.opacity(0.15))
+                    )
+                }
+                
+                Button {
+                    Task { await processBrainDump() }
+                } label: {
+                    HStack {
+                        Image(systemName: "sparkles")
+                        Text("Organize")
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 44)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(brainDumpText.isEmpty ? Color.gray : Color.themeAccent)
+                    )
+                }
+                .disabled(brainDumpText.isEmpty)
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.themeSecondary)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.themeAccent.opacity(0.3), lineWidth: 1)
+                )
+        )
+    }
+    
+    private func processBrainDump() async {
+        guard !brainDumpText.isEmpty else { return }
+        
+        let dumpContent = brainDumpText
+        currentPhase = .processing
+        
+        localMessages.append(ConversationMessage(
+            role: .user,
+            content: "Brain dump: \(dumpContent)",
+            timestamp: Date()
+        ))
+        
+        do {
+            let result = try await openAIService.processUserInput(
+                "Please organize this brain dump into actionable tasks. Be thorough - extract every actionable item, even small ones. Here's what's on my mind: \(dumpContent)",
+                apiKey: appState.claudeKey,
+                personality: appState.selectedPersonality
+            )
+            
+            if !result.tasks.isEmpty || !result.events.isEmpty || !result.reminders.isEmpty {
+                lastParseResult = result
+                currentPhase = .awaitingConfirmation
+                
+                let preview = buildPreviewMessage(result)
+                localMessages.append(ConversationMessage(role: .assistant, content: preview, timestamp: Date()))
+                await speakResponse("I found \(result.tasks.count + result.events.count + result.reminders.count) items in your brain dump. Ready to save them?")
+            } else {
+                let response = "I couldn't find specific tasks in that. Try being more concrete - what needs to get done?"
+                localMessages.append(ConversationMessage(role: .assistant, content: response, timestamp: Date()))
+                await speakResponse(response)
+                currentPhase = .brainDump
+            }
+            
+            brainDumpText = ""
+            isBrainDumpMode = false
+            
+        } catch {
+            errorMessage = error.localizedDescription
+            currentPhase = .brainDump
+        }
     }
 
     private var apiKeyWarning: some View {

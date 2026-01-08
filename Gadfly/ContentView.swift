@@ -32,12 +32,17 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $appState.selectedTab) {
-            // Focus tab - ADHD-friendly simplified view (primary entry point)
-            FocusHomeView()
-                .tabItem {
-                    Label("Focus", systemImage: "scope")
+            Group {
+                if appState.isSimpleMode {
+                    GuidedHomeView()
+                } else {
+                    FocusHomeView()
                 }
-                .tag(0)
+            }
+            .tabItem {
+                Label("Focus", systemImage: "scope")
+            }
+            .tag(0)
 
             RecordingView()
                 .tabItem {
@@ -103,7 +108,6 @@ struct ContentView: View {
             )
             .environmentObject(appState)
         }
-        // Location exit trigger
         .onChange(of: locationService.locationExitTriggered) { (triggeredLocation: LocationService.SavedLocation?) in
             if let location = triggeredLocation {
                 checkoutLocation = location

@@ -11,7 +11,7 @@ struct ActiveFocusSessionView: View {
 
     @State private var elapsedTime: TimeInterval = 0
     @State private var timer: Timer?
-    @State private var showingBreakdown = false
+    @State private var showBreakdownPrompt = true
     @State private var suggestedSteps: [SubTask] = []
     @State private var isGeneratingSteps = false
     @State private var showEndConfirm = false
@@ -29,23 +29,40 @@ struct ActiveFocusSessionView: View {
         VStack(spacing: 0) {
             // SCROLLABLE CONTENT
             ScrollView {
-                VStack(spacing: 12) {
-                    // Task name + timer
-                    Text(bodyDoublingService.currentSession?.taskTitle ?? "Your task")
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .foregroundStyle(themeColors.text)
-                        .lineLimit(1)
-                        .padding(.top, 12)
-
-                    Text(formatTime(elapsedTime))
-                        .font(.system(size: 28, weight: .light, design: .monospaced))
+                VStack(spacing: 16) {
+                    VStack(spacing: 12) {
+                        Text("YOUR TASK")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(themeColors.accent)
+                            .tracking(1)
+                        
+                        Text(bodyDoublingService.currentSession?.taskTitle ?? "Your task")
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(themeColors.text)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(3)
+                        
+                        HStack(spacing: 8) {
+                            Image(systemName: "timer")
+                                .font(.title3)
+                            Text(formatTime(elapsedTime))
+                                .font(.system(size: 24, weight: .medium, design: .monospaced))
+                        }
                         .foregroundStyle(themeColors.accent)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
+                    .padding(.horizontal, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(themeColors.secondary)
+                    )
+                    .padding(.top, 12)
 
                     // Subtasks or breakdown prompt
                     if !suggestedSteps.isEmpty {
                         currentStepCard
-                    } else {
+                    } else if showBreakdownPrompt {
                         breakdownPrompt
                     }
                 }
@@ -190,45 +207,45 @@ struct ActiveFocusSessionView: View {
     // MARK: - Breakdown Prompt
 
     private var breakdownPrompt: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 16) {
             if isGeneratingSteps {
                 ProgressView()
-                Text("Breaking down...")
-                    .font(.caption)
+                    .scaleEffect(1.5)
+                Text("Breaking it down...")
+                    .font(.title3)
                     .foregroundStyle(themeColors.subtext)
             } else {
                 Image(systemName: "wand.and.sparkles")
-                    .font(.title)
+                    .font(.system(size: 40))
                     .foregroundStyle(themeColors.accent)
 
                 Text("Break into smaller steps?")
-                    .font(.subheadline)
+                    .font(.title3.weight(.semibold))
                     .foregroundStyle(themeColors.text)
 
-                HStack(spacing: 12) {
+                VStack(spacing: 12) {
                     Button {
                         generateBreakdown()
                     } label: {
-                        Text("Yes")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.black)
+                        Text("Yes, break it down")
+                            .font(.headline)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(Color.themeAccent)
-                            .cornerRadius(10)
+                            .frame(height: 56)
+                            .background(themeColors.accent)
+                            .cornerRadius(14)
                     }
 
                     Button {
-                        showingBreakdown = false
+                        withAnimation { showBreakdownPrompt = false }
                     } label: {
-                        Text("No")
-                            .font(.subheadline)
-                            .foregroundStyle(themeColors.subtext)
+                        Text("No thanks")
+                            .font(.headline)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(Color.themeSecondary)
-                            .cornerRadius(10)
+                            .frame(height: 56)
+                            .background(Color.gray)
+                            .cornerRadius(14)
                     }
                 }
             }
@@ -241,32 +258,34 @@ struct ActiveFocusSessionView: View {
     // MARK: - Companion Card
 
     private var companionCard: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             Text(appState.selectedPersonality.emoji)
-                .font(.title2)
+                .font(.title)
 
-            Text("Here with you")
-                .font(.caption)
-                .foregroundStyle(themeColors.subtext)
+            Text("I'm here with you")
+                .font(.body.weight(.medium))
+                .foregroundStyle(themeColors.text)
 
             Spacer()
 
-            // Speak button
             Button {
                 speakEncouragement()
             } label: {
-                Image(systemName: "speaker.wave.2.fill")
-                    .font(.body)
-                    .foregroundStyle(themeColors.accent)
-                    .frame(width: 36, height: 36)
-                    .background(Color.themeSecondary)
-                    .clipShape(Circle())
+                HStack(spacing: 6) {
+                    Image(systemName: "speaker.wave.2.fill")
+                    Text("Encourage")
+                }
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(themeColors.accent)
+                .cornerRadius(10)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(Color.themeSecondary.opacity(0.3))
-        .cornerRadius(10)
+        .padding(16)
+        .background(themeColors.secondary)
+        .cornerRadius(14)
     }
 
     // MARK: - Action Buttons
@@ -275,17 +294,17 @@ struct ActiveFocusSessionView: View {
         Button {
             showEndConfirm = true
         } label: {
-            HStack {
+            HStack(spacing: 10) {
                 Image(systemName: "stop.fill")
-                Text("End")
+                    .font(.title3)
+                Text("End Session")
+                    .font(.headline)
             }
-            .font(.subheadline)
-            .fontWeight(.semibold)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(Color.red.opacity(0.8))
-            .cornerRadius(10)
+            .frame(height: 56)
+            .background(Color.red)
+            .cornerRadius(14)
         }
     }
 
